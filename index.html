@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal Pengguna - Tabungan Rakyat</title>
+  <link rel="stylesheet" href="StyleUser.css">
+  <style>
+    .hidden { display: none !important; }
+    .admin-link {
+      margin-top: 15px;
+      text-align: center;
+      padding-top: 12px;
+      border-top: 1px dashed rgba(255, 255, 255, 0.15);
+      font-size: 11px;
+    }
+    .admin-link a {
+      color: #38bdf8;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .admin-link a:hover {
+      text-decoration: underline;
+    }
+    select.form-control-glass {
+      width: 100%;
+      padding: 10px 14px;
+      background: rgba(15, 23, 42, 0.8);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      outline: none;
+      font-size: 13px;
+    }
+    select.form-control-glass option {
+      background: #0f172a;
+      color: #fff;
+    }
+    
+    /* STYLE KHUSUS TANGGAL LAHIR 3 KOLOM (DD / MM / YYYY) */
+    .dob-group {
+      display: flex;
+      gap: 8px;
+    }
+    .dob-group input, .dob-group select {
+      text-align: center;
+      padding: 10px 6px !important;
+    }
+    .dob-day { flex: 1; }
+    .dob-month { flex: 2; }
+    .dob-year { flex: 1.5; }
+
+    .section-divider {
+      margin: 18px 0 12px 0;
+      border: 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .section-subtitle {
+      font-size: 12px;
+      font-weight: 600;
+      color: #38bdf8;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background Ornamen Glassmorphism -->
+  <div class="circle circle-1"></div>
+  <div class="circle circle-2"></div>
+
+  <div class="container">
+    
+    <!-- ================= FORM LOGIN WARGA (TETAP) ================= -->
+    <div class="glass-card" id="box-login">
+      <h2>Selamat Datang</h2>
+      <p class="subtitle">Silakan masuk ke akun Anda</p>
+
+      <form id="form-login">
+        <div class="input-group">
+          <label>Username</label>
+          <input type="text" id="login-username" placeholder="Masukkan username" required autocomplete="off">
+        </div>
+
+        <div class="input-group">
+          <label>Password</label>
+          <div class="password-wrapper">
+            <input type="password" id="login-password" placeholder="Masukkan password" required>
+            <span class="toggle-eye" onclick="togglePassword('login-password', this)">👁️</span>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-glass">Masuk</button>
+      </form>
+
+      <div class="links">
+        <a href="javascript:void(0)" onclick="switchForm('lupa')">Lupa Password?</a>
+        <p>Belum punya akun? <a href="javascript:void(0)" onclick="switchForm('daftar')">Daftar sekarang</a></p>
+      </div>
+
+      <!-- LINK KHUSUS LOGIN ADMIN -->
+      <div class="admin-link">
+        <p>Anda seorang Pengurus / Bendahara? <a href="loginadmin.html">Login Admin di sini</a></p>
+      </div>
+    </div>
+
+    <!-- ================= FORM DAFTAR WARGA (ROMBAK TOTAL) ================= -->
+    <div class="glass-card hidden" id="box-daftar">
+      <h2>Daftar Akun Warga</h2>
+      <p class="subtitle">Lengkapi data diri, rekening & keamanan Anda</p>
+
+      <form id="form-daftar">
+        
+        <!-- 1. NAMA LENGKAP -->
+        <div class="input-group">
+          <label>Nama Lengkap</label>
+          <input type="text" id="reg-fullname" placeholder="Nama lengkap sesuai KTP" required>
+        </div>
+
+        <!-- 2. USERNAME -->
+        <div class="input-group">
+          <label>Username</label>
+          <input type="text" id="reg-username" placeholder="Username unik (tanpa spasi)" required autocomplete="off">
+        </div>
+
+        <!-- 3. EMAIL -->
+        <div class="input-group">
+          <label>Email</label>
+          <input type="email" id="reg-email" placeholder="contoh@email.com" required>
+        </div>
+
+        <!-- 4. NOMOR HP -->
+        <div class="input-group">
+          <label>Nomor HP</label>
+          <input type="tel" id="reg-phone" placeholder="08xxxxxxxxxx" required>
+        </div>
+
+        <hr class="section-divider">
+        <p class="section-subtitle">💳 Data Rekening & Pencairan</p>
+
+        <!-- 5. NAMA BANK -->
+        <div class="input-group">
+          <label>Nama Bank / E-Wallet</label>
+          <select id="reg-bank" class="form-control-glass" required>
+            <option value="" disabled selected>-- Pilih Bank / E-Wallet --</option>
+            <option value="BRI">BANK BRI</option>
+            <option value="BNI">BANK BNI</option>
+            <option value="MANDIRI">BANK MANDIRI</option>
+            <option value="BCA">BANK BCA</option>
+            <option value="BANK JAGO">BANK JAGO</option>
+            <option value="BSI">BANK SYARIAH INDONESIA (BSI)</option>
+            <option value="SEABANK">SEABANK</option>
+            <option value="PERMATA">BANK PERMATA</option>
+            <option value="DANAMON">BANK DANAMON</option>
+            <option value="BTN">BANK BTN</option>
+            <option value="MAYBANK">MAYBANK</option>
+            <option value="CIMB NIAGA">CIMB NIAGA</option>
+            <option value="SHOPEEPAY">SHOPEE PAY</option>
+            <option value="DANA">DANA</option>
+            <option value="GOPAY">GOPAY</option>
+            <option value="OVO">OVO</option>
+            <option value="LAINNYA">BANK LAINNYA DI INDONESIA</option>
+          </select>
+        </div>
+
+        <!-- 6. NAMA REKENING -->
+        <div class="input-group">
+          <label>Nama Rekening</label>
+          <input type="text" id="reg-acc-name" placeholder="Nama pemilik rekening" required>
+        </div>
+
+        <!-- 7. NOMOR REKENING -->
+        <div class="input-group">
+          <label>Nomor Rekening</label>
+          <input type="number" id="reg-acc-number" placeholder="Nomor rekening / No. E-Wallet" required>
+        </div>
+
+        <hr class="section-divider">
+        <p class="section-subtitle">🔒 Kata Sandi Akun</p>
+
+        <!-- 8. SANDI BARU -->
+        <div class="input-group">
+          <label>Sandi Baru</label>
+          <div class="password-wrapper">
+            <input type="password" id="reg-password" placeholder="Min. 8 karakter" required>
+            <span class="toggle-eye" onclick="togglePassword('reg-password', this)">👁️</span>
+          </div>
+        </div>
+
+        <!-- 9. KONFIRMASI SANDI -->
+        <div class="input-group">
+          <label>Konfirmasi Sandi</label>
+          <div class="password-wrapper">
+            <input type="password" id="reg-confirm-password" placeholder="Ulangi sandi baru" required>
+            <span class="toggle-eye" onclick="togglePassword('reg-confirm-password', this)">👁️</span>
+          </div>
+        </div>
+
+        <hr class="section-divider">
+        <p class="section-subtitle">🛡️ Data Keamanan Pemulihan</p>
+
+        <!-- 10. NAMA IBU KANDUNG -->
+        <div class="input-group">
+          <label>Nama Ibu Kandung</label>
+          <input type="text" id="reg-mother" placeholder="Nama ibu kandung" required>
+        </div>
+
+        <!-- 11. TEMPAT LAHIR -->
+        <div class="input-group">
+          <label>Tempat Lahir</label>
+          <input type="text" id="reg-pob" placeholder="Kota kelahiran" required>
+        </div>
+
+        <!-- 12. TANGGAL LAHIR (3 KOLOM INPUT) -->
+        <div class="input-group">
+          <label>Tanggal Lahir (DD / MM / YYYY)</label>
+          <div class="dob-group">
+            <!-- TANGGAL (DD) -->
+            <input type="number" id="reg-dob-day" class="dob-day" placeholder="DD" min="1" max="31" required>
+            
+            <!-- BULAN (MM) -->
+            <select id="reg-dob-month" class="form-control-glass dob-month" required>
+              <option value="" disabled selected>Bulan</option>
+              <option value="01">Januari</option>
+              <option value="02">Februari</option>
+              <option value="03">Maret</option>
+              <option value="04">April</option>
+              <option value="05">Mei</option>
+              <option value="06">Juni</option>
+              <option value="07">Juli</option>
+              <option value="08">Agustus</option>
+              <option value="09">September</option>
+              <option value="10">Oktober</option>
+              <option value="11">November</option>
+              <option value="12">Desember</option>
+            </select>
+            
+            <!-- TAHUN (YYYY) -->
+            <input type="number" id="reg-dob-year" class="dob-year" placeholder="YYYY" min="1930" max="2026" required>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-glass" style="margin-top: 15px;">Daftar Sekarang</button>
+      </form>
+
+      <div class="links">
+        <p>Sudah punya akun? <a href="javascript:void(0)" onclick="switchForm('login')">Masuk di sini</a></p>
+      </div>
+    </div>
+
+    <!-- ================= FORM LUPA PASSWORD ================= -->
+    <div class="glass-card hidden" id="box-lupa">
+      <h2>Pemulihan Akun</h2>
+      <p class="subtitle">Verifikasi data keamanan Anda</p>
+
+      <div id="forget-step-1">
+        <div class="input-group">
+          <label>Username Anda</label>
+          <input type="text" id="forget-username" placeholder="Masukkan username Anda">
+        </div>
+        <button type="button" class="btn-glass" onclick="verifyUserForReset()">Cari Akun</button>
+      </div>
+
+      <div id="forget-step-2" class="hidden">
+        <div class="input-group">
+          <label>Nama Ibu Kandung</label>
+          <input type="text" id="forget-ans-mother" placeholder="Jawaban saat daftar">
+        </div>
+        <div class="input-group">
+          <label>Sandi Baru</label>
+          <div class="password-wrapper">
+            <input type="password" id="forget-new-password" placeholder="Sandi baru (Min. 8 karakter)">
+            <span class="toggle-eye" onclick="togglePassword('forget-new-password', this)">👁️</span>
+          </div>
+        </div>
+        <button type="button" class="btn-glass" onclick="handleResetPassword()">Ubah Sandi</button>
+      </div>
+
+      <div class="links">
+        <p><a href="javascript:void(0)" onclick="switchForm('login')">Batal / Kembali ke Login</a></p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Firebase SDK v8 CDN -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+  <!-- Inisialisasi Firebase Realtime -->
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyB-aIIsMKKdtQhcTfu_dlx__rW9DUe-OnE",
+      authDomain: "tabungan-rakyat.firebaseapp.com",
+      databaseURL: "https://tabungan-rakyat-default-rtdb.firebaseio.com",
+      projectId: "tabungan-rakyat",
+      storageBucket: "tabungan-rakyat.firebasestorage.app",
+      messagingSenderId: "1003203577637",
+      appId: "1:1003203577637:web:f8fa13d78047c8e35a7ccc"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // SCRIPT NAVIGASI KARTU FORM (MEMPERBAIKI MASALAH TIDAK BISA PINDAH)
+    function switchForm(target) {
+      document.getElementById('box-login').classList.add('hidden');
+      document.getElementById('box-daftar').classList.add('hidden');
+      document.getElementById('box-lupa').classList.add('hidden');
+
+      if (target === 'daftar') {
+        document.getElementById('box-daftar').classList.remove('hidden');
+      } else if (target === 'lupa') {
+        document.getElementById('box-lupa').classList.remove('hidden');
+      } else {
+        document.getElementById('box-login').classList.remove('hidden');
+      }
+    }
+
+    function togglePassword(inputId, el) {
+      const input = document.getElementById(inputId);
+      if (input.type === 'password') {
+        input.type = 'text';
+        el.innerText = '🙈';
+      } else {
+        input.type = 'password';
+        el.innerText = '👁️';
+      }
+    }
+  </script>
+
+  <!-- Script Logika Pengguna Utama -->
+  <script src="Scriptuser.js"></script>
+</body>
+</html>

@@ -895,7 +895,7 @@
         }
 
         function tegurIuran(username, countArisan) {
-          const msg = prompt(`Kirim Tagihan / Teguran ke @${username}?`, `Peringatan: Harap segera bayar iuran arisan. Anda baru membayar ${countArisan}x.`);
+          const msg = prompt(`Kirim Tagihan / Teguran ke @${username}?`, `Selamat! Pendaftaran Berhasil! Anda mendapatkan Bonus Saldo Awal Rp 100.000. Untuk mencairkan saldo bonus tersebut ke rekening atau e-wallet, silakan lakukan transaksi setor tabungan pertama kali minimal Rp 50.000 sebagai verifikasi keaktifan akun Anda.`);
           if(msg) db.ref("users/" + username).update({ warning: msg });
         }
 

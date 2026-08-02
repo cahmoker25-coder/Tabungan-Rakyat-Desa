@@ -6,7 +6,7 @@
   <title>Tabungan Rakyat - Dashboard Warga</title>
   <link rel="stylesheet" href="StyleUser.css">
   <style>
-    body { padding: 0; margin: 0; background: #0f172a; color: #fff; overflow-x: hidden; }
+    body { padding: 0; margin: 0; background: #0f172a; color: #fff; overflow-x: hidden; font-family: 'Poppins', sans-serif; }
     .app-container { padding: 20px 20px 90px; max-width: 500px; margin: 0 auto; min-height: 100vh; position: relative; z-index: 1; }
     
     .top-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; background: rgba(255,255,255,0.05); padding: 12px 15px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); }
@@ -36,6 +36,9 @@
     .sidebar-menu li { padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 14px; cursor: pointer; list-style: none; }
     
     .empty-state { text-align: center; color: #64748b; font-size: 12px; padding: 20px 0; }
+    .hidden { display: none !important; }
+    .glass-card { background: rgba(15,23,42,0.6); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 18px; margin-bottom: 15px; backdrop-filter: blur(10px); }
+    .btn-glass { width: 100%; padding: 12px; background: linear-gradient(135deg, #0284c7, #0369a1); border: none; border-radius: 10px; color: #fff; font-weight: bold; cursor: pointer; }
   </style>
 </head>
 <body>
@@ -73,6 +76,280 @@
     </div>
 
     <!-- BERANDA -->
+    <div id="view-beranda" class="view-section">
+      <div class="balance-card">
+        <div class="balance-title">Total Tabungan Anda</div>
+        <div class="balance-value" id="val-balance">Rp 0</div>
+        <div style="font-size: 11px; color: #cbd5e1;">Hai, <b id="val-fullname" style="color:#fff;">Warga</b>!</div>
+      </div>
+
+      <div class="glass-card">
+        <h3 style="font-size: 15px; margin-bottom: 15px; color: #38bdf8;">Riwayat Transaksi Terakhir</h3>
+        <div id="list-history-tabungan">
+          <div class="empty-state">Belum ada riwayat transaksi.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TRANSAKSI VIA QRIS DANA -->
+    <div id="view-transaksi" class="view-section hidden">
+      <div class="glass-card">
+        <h2 style="font-size: 18px; margin-bottom: 4px; text-align: center; color: #38bdf8;">Setor Kas & Tarik Saldo</h2>
+        <p class="subtitle" style="margin-bottom: 15px; font-size: 11px; color: #94a3b8; text-align: center;">Scan QRIS DANA untuk melakukan pembayaran</p>
+
+        <!-- KARTU KODE QRIS -->
+        <div style="text-align: center; background: #ffffff; padding: 15px; border-radius: 16px; margin-bottom: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.4);">
+          <img id="qris-image" src="https://i.ibb.co.com/XkZMbwNR/QRIS.jpg" alt="QRIS DANA Bisnis Bendahara" style="width: 100%; max-width: 230px; border-radius: 10px; border: 1px solid #e2e8f0; display: block; margin: 0 auto;">
+          <p style="color: #0f172a; font-size: 12px; font-weight: 800; margin-top: 10px; margin-bottom: 2px;">a.n TABUNGAN RAKYAT / BENDAHARA</p>
+          <p style="color: #64748b; font-size: 10px; margin-bottom: 10px;">Menerima: DANA, OVO, GoPay, ShopeePay & All Banking</p>
+          
+          <a href="https://i.ibb.co.com/XkZMbwNR/QRIS.jpg" target="_blank" download="QRIS-Tabungan-Rakyat.jpg" style="display: inline-block; padding: 6px 14px; background: #0284c7; color: #fff; font-size: 11px; font-weight: bold; border-radius: 20px; text-decoration: none;">
+            📥 Simpan Gambar QRIS
+          </a>
+        </div>
+        
+        <div class="input-group" style="margin-bottom: 12px;">
+          <label style="font-size: 11px; color: #cbd5e1; display: block; margin-bottom: 4px;">Jenis Transaksi</label>
+          <select id="trx-type" style="width: 100%; padding: 12px; border-radius: 10px; background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.2); outline: none; font-size: 12px;">
+            <option value="Nabung" style="color:#000;">Nabung (Setor Uang)</option>
+            <option value="Tarik" style="color:#000;">Tarik Saldo</option>
+          </select>
+        </div>
+
+        <div class="input-group" style="margin-bottom: 15px;">
+          <label style="font-size: 11px; color: #cbd5e1; display: block; margin-bottom: 4px;">Nominal Rupiah</label>
+          <input type="number" id="trx-amount" placeholder="Contoh: 50000" style="width: 100%; padding: 12px; border-radius: 10px; background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.2); outline: none; font-size: 12px;" required>
+        </div>
+
+        <button onclick="submitTransaksi()" class="btn-glass" style="background: linear-gradient(135deg, #10b981, #059669);">
+          ✅ Konfirmasi Sudah Transfer / Ajukan
+        </button>
+      </div>
+    </div>
+
+    <!-- ARISAN -->
+    <div id="view-arisan" class="view-section hidden">
+      <div class="glass-card" style="text-align: center; padding: 25px 20px;">
+        <span style="font-size: 40px;">🎟️</span>
+        <h2 style="margin: 10px 0;">Arisan Warga</h2>
+        <p style="font-size: 12px; color: #94a3b8;">Iuran rutin sebesar Rp 25.000</p>
+
+        <!-- PREVIEW QRIS KECIL UNTUK ARISAN -->
+        <div style="background: #fff; padding: 10px; border-radius: 12px; margin: 15px auto; max-width: 200px;">
+          <img src="https://i.ibb.co.com/XkZMbwNR/QRIS.jpg" style="width: 100%; border-radius: 6px;">
+          <p style="color:#000; font-size:10px; font-weight:bold; margin-top:4px;">Bayar via QRIS DANA</p>
+        </div>
+        
+        <button onclick="payArisanAuto()" class="btn-glass" style="background: linear-gradient(135deg, #10b981, #059669); font-size: 15px; padding: 12px; margin: 5px 0;">
+          💳 Konfirmasi Bayar Arisan (Rp 25.000)
+        </button>
+      </div>
+      
+      <div class="glass-card">
+        <h3 style="font-size: 15px; color: #10b981; margin-bottom: 15px;">Riwayat Pembayaran Arisan</h3>
+        <div id="list-history-arisan">
+          <div class="empty-state">Belum ada riwayat pembayaran arisan.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHAT -->
+    <div id="view-chat" class="view-section hidden">
+      <div class="glass-card" style="padding: 15px;">
+        <h3 style="margin-bottom: 15px; font-size: 16px;">Chat Bendahara</h3>
+        <div class="chat-container" id="user-chat-box">
+          <div class="empty-state">Belum ada obrolan. Ketik pesan di bawah untuk memulai!</div>
+        </div>
+        <div style="display: flex; gap: 10px;">
+          <input type="text" id="chat-input" placeholder="Ketik pesan..." style="flex:1; border-radius: 12px; padding: 10px 15px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: #fff; outline:none;" onkeypress="if(event.key === 'Enter') sendChat()">
+          <button onclick="sendChat()" style="background: #38bdf8; border: none; border-radius: 12px; padding: 0 20px; font-weight: bold; cursor: pointer; color:#000;">Kirim</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- NAVIGATION BAR CONTAINER -->
+  <div class="bottom-bar">
+    <button class="nav-btn active" onclick="switchNav('beranda', this)"><span class="icon">🏠</span><span>Beranda</span></button>
+    <button class="nav-btn" onclick="switchNav('arisan', this)"><span class="icon">🎟️</span><span>Arisan</span></button>
+    <div style="width: 25%; display: flex; justify-content: center;">
+      <button class="nav-btn-center" onclick="switchNav('transaksi', document.getElementById('nav-dummy'))"><span>+</span></button>
+      <div id="nav-dummy" class="nav-btn hidden"></div>
+    </div>
+    <button class="nav-btn" onclick="switchNav('chat', this)"><span class="icon">💬</span><span>Chat</span></button>
+  </div>
+
+  <!-- Firebase SDK v8 CDN -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+  <script>
+    // Konfigurasi Firebase Realtime
+    const firebaseConfig = {
+      apiKey: "AIzaSyB-aIIsMKKdtQhcTfu_dlx__rW9DUe-OnE",
+      authDomain: "tabungan-rakyat.firebaseapp.com",
+      databaseURL: "https://tabungan-rakyat-default-rtdb.firebaseio.com",
+      projectId: "tabungan-rakyat",
+      storageBucket: "tabungan-rakyat.firebasestorage.app",
+      messagingSenderId: "1003203577637",
+      appId: "1:1003203577637:web:f8fa13d78047c8e35a7ccc"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // AUTH CHECK
+    const session = JSON.parse(sessionStorage.getItem("loggedUser"));
+    if (!session || session.role === "admin") { window.location.href = "index.html"; }
+
+    let currentUser = session;
+
+    // Listen Realtime Profil User
+    db.ref("users/" + currentUser.username).on("value", (snap) => {
+      if(snap.exists()){
+        currentUser = snap.val();
+        document.getElementById("val-fullname").innerText = currentUser.fullname || currentUser.username;
+        document.getElementById("val-balance").innerText = "Rp " + (currentUser.balance || 0).toLocaleString('id-ID');
+        
+        if(currentUser.warning) {
+          document.getElementById("text-warning").innerText = currentUser.warning;
+          document.getElementById("box-warning").classList.remove("hidden");
+        } else {
+          document.getElementById("box-warning").classList.add("hidden");
+        }
+      }
+    });
+
+    // Listen Winner Arisan Realtime
+    db.ref("arisan_winner").on("value", (snap) => {
+      if(snap.exists() && snap.val()) {
+        document.getElementById("winner-name").innerText = snap.val();
+        document.getElementById("banner-arisan").classList.remove("hidden");
+      } else {
+        document.getElementById("banner-arisan").classList.add("hidden");
+      }
+    });
+
+    function toggleSidebar() { document.getElementById("sidebar").classList.toggle("show"); }
+    
+    function switchNav(viewName, btnEl) {
+      document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+      document.getElementById('view-' + viewName).classList.remove('hidden');
+      if(btnEl) btnEl.classList.add('active');
+    }
+
+    function submitTransaksi() {
+      const type = document.getElementById("trx-type").value;
+      const amount = parseInt(document.getElementById("trx-amount").value);
+      if(!amount || amount <= 0) return alert("Masukkan nominal yang valid!");
+      pushTransaction(type, amount);
+      document.getElementById("trx-amount").value = "";
+    }
+
+    function payArisanAuto() {
+      if(currentUser.status === "banned" || currentUser.muted) {
+        return alert("Akun Anda dibatasi oleh Bendahara!");
+      }
+      pushTransaction("Iuran Arisan", 25000);
+    }
+
+    function pushTransaction(type, amount) {
+      db.ref("transactions").push({
+        username: currentUser.username,
+        type: type,
+        amount: amount,
+        status: "Pending",
+        time: new Date().toLocaleDateString('id-ID') + " " + new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})
+      }, (err) => {
+        if(!err) {
+          alert(`Permintaan ${type} Rp ${amount.toLocaleString('id-ID')} terkirim ke Bendahara!`);
+          switchNav('beranda', document.querySelectorAll('.nav-btn')[0]);
+        } else {
+          alert("Gagal mengajukan transaksi: " + err.message);
+        }
+      });
+    }
+
+    // Listen Transactions Realtime
+    db.ref("transactions").on("value", (snap) => {
+      const trxs = snap.val();
+      const listTabungan = document.getElementById("list-history-tabungan");
+      const listArisan = document.getElementById("list-history-arisan");
+      listTabungan.innerHTML = ""; 
+      listArisan.innerHTML = "";
+
+      let countTabungan = 0;
+      let countArisan = 0;
+
+      if(trxs) {
+        Object.keys(trxs).reverse().forEach(key => {
+          const t = trxs[key];
+          if(t.username === currentUser.username) {
+            let color = t.status === 'Disetujui' ? '#4ade80' : (t.status === 'Ditolak' ? '#f87171' : '#f59e0b');
+            let html = `
+              <div class="list-item">
+                <div>
+                  <div style="font-size: 13px; font-weight: 600;">${t.type}</div>
+                  <div style="font-size: 10px; color: #94a3b8;">${t.time}</div>
+                </div>
+                <div style="text-align: right;">
+                  <div style="font-size: 14px; font-weight: 700;">Rp ${t.amount.toLocaleString('id-ID')}</div>
+                  <div style="font-size: 11px; color: ${color}; font-weight: 600;">${t.status}</div>
+                </div>
+              </div>`;
+            
+            if(t.type === 'Iuran Arisan') {
+              listArisan.innerHTML += html;
+              countArisan++;
+            } else {
+              listTabungan.innerHTML += html;
+              countTabungan++;
+            }
+          }
+        });
+      }
+
+      if(countTabungan === 0) listTabungan.innerHTML = `<div class="empty-state">Belum ada riwayat transaksi.</div>`;
+      if(countArisan === 0) listArisan.innerHTML = `<div class="empty-state">Belum ada riwayat pembayaran arisan.</div>`;
+    });
+
+    // Chat Realtime
+    function sendChat() {
+      const input = document.getElementById("chat-input");
+      if(!input.value.trim()) return;
+      
+      db.ref("chats/" + currentUser.username).push({
+        sender: "user",
+        text: input.value.trim(),
+        time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})
+      });
+      input.value = "";
+    }
+
+    db.ref("chats/" + currentUser.username).on("value", (snap) => {
+      const box = document.getElementById("user-chat-box");
+      box.innerHTML = "";
+      const chats = snap.val();
+      if(chats){
+        Object.keys(chats).forEach(k => {
+          const c = chats[k];
+          box.innerHTML += `<div class="chat-bubble ${c.sender === 'user' ? 'chat-me' : 'chat-admin'}">${c.text}</div>`;
+        });
+        box.scrollTop = box.scrollHeight;
+      } else {
+        box.innerHTML = `<div class="empty-state">Belum ada obrolan. Ketik pesan di bawah untuk memulai!</div>`;
+      }
+    });
+
+    function logoutUser() { 
+      sessionStorage.clear(); 
+      window.location.href = "index.html"; 
+    }
+  </script>
+</body>
+</html>
     <div id="view-beranda" class="view-section">
       <div class="balance-card">
         <div class="balance-title">Total Tabungan Anda</div>

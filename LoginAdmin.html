@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal Khusus Admin - Tabungan Rakyat</title>
+  <link rel="stylesheet" href="Loginadmin.css">
+</head>
+<body>
+
+  <!-- Ornamen Background Khusus Admin -->
+  <div class="circle circle-admin-1"></div>
+  <div class="circle circle-admin-2"></div>
+
+  <div class="container">
+    <div class="glass-card">
+      <div class="admin-badge">RESTRICTED AREA</div>
+      <h2>Login Administrator</h2>
+      <p class="subtitle">Akses khusus pengelola sistem</p>
+
+      <form id="form-admin-login" onsubmit="handleAdminLogin(event)">
+        <div class="input-group">
+          <label>Username Admin</label>
+          <input type="text" id="admin-username" placeholder="Masukkan ID Admin" autocomplete="off" required>
+        </div>
+
+        <div class="input-group">
+          <label>Password Admin</label>
+          <div class="password-wrapper">
+            <input type="password" id="admin-password" placeholder="Masukkan Kunci Akses" required>
+            <span class="toggle-eye" onclick="togglePassword('admin-password', this)">👁️</span>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-admin-glass">Masuk ke Dashboard</button>
+      </form>
+
+      <div class="links">
+        <a href="index.html">← Kembali ke Portal Utama</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDK v8 CDN -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+  <!-- Inisialisasi Firebase Proyek -->
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyB-aIIsMKKdtQhcTfu_dlx__rW9DUe-OnE",
+      authDomain: "tabungan-rakyat.firebaseapp.com",
+      databaseURL: "https://tabungan-rakyat-default-rtdb.firebaseio.com",
+      projectId: "tabungan-rakyat",
+      storageBucket: "tabungan-rakyat.firebasestorage.app",
+      messagingSenderId: "1003203577637",
+      appId: "1:1003203577637:web:f8fa13d78047c8e35a7ccc"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+  </script>
+
+  <!-- Script Logika Admin -->
+  <script src="Loginadmin.js"></script>
+</body>
+</html>

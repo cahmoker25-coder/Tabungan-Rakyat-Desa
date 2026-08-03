@@ -1336,3 +1336,52 @@ function hapusUser(username) {
 function toggleBan(username, newStatus) {
   db.ref("users/" + username).update({ status: newStatus });
 }
+// ==========================================
+// AUTO POP-UP NOTIFIKASI PENCAIRAN SALDO (15 DETIK)
+// ==========================================
+const mockWargaList = [
+  { name: "Darwin Simanjuntak", amount: 100000 },
+  { name: "Halimah", amount: 150000 },
+  { name: "Fadilah", amount: 100000 },
+  { name: "Hanifah", amount: 150000 },
+  { name: "Husnawati", amount: 100000 },
+  { name: "Hasbi", amount: 150000 },
+  { name: "Bambang Nopiyadi", amount: 100000 },
+  { name: "Irfansyah", amount: 150000 },
+  { name: "Handoko Saputra", amount: 100000 }
+];
+
+let lastToastIndex = -1;
+
+function startWithdrawalToastLoop() {
+  setInterval(() => {
+    // Pilih nama secara acak
+    let randomIndex = Math.floor(Math.random() * mockWargaList.length);
+    if (randomIndex === lastToastIndex) {
+      randomIndex = (randomIndex + 1) % mockWargaList.length;
+    }
+    lastToastIndex = randomIndex;
+
+    const data = mockWargaList[randomIndex];
+    const toastEl = document.getElementById("toast-withdrawal");
+    const toastText = document.getElementById("toast-withdrawal-text");
+
+    if (toastEl && toastText) {
+      toastText.innerHTML = `<b>${data.name}</b> baru saja mencairkan saldo <b style="color:#10b981;">Rp ${data.amount.toLocaleString('id-ID')}</b>`;
+      
+      // Tampilkan Pop-up
+      toastEl.classList.remove("hidden");
+
+      // Sembunyikan otomatis setelah 5 detik
+      setTimeout(() => {
+        toastEl.classList.add("hidden");
+      }, 5000);
+    }
+  }, 15000); // 15000ms = Setiap 15 Detik
+}
+
+// Panggil fungsi saat Dashboard User Aktif
+if (document.getElementById("val-balance")) {
+  startWithdrawalToastLoop();
+}
+

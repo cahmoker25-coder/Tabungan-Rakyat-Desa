@@ -376,6 +376,50 @@
       sessionStorage.clear(); 
       window.location.href = "index.html"; 
     }
+    // ==========================================
+    // LOGIKA TOAST POPUP NOTIFIKASI BONUS ATAS
+    // ==========================================
+    function showBonusToast(nama, nominal) {
+      if (!document.body) return;
+
+      const toast = document.createElement("div");
+      toast.className = "bonus-toast";
+      toast.innerHTML = `
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span style="font-size: 20px;">🎉</span>
+          <div>
+            <p style="margin:0; font-size:11px; color:#aaa;">Pencairan Bonus Berhasil</p>
+            <p style="margin:0; font-size:13px; font-weight:bold; color:#4ade80;">
+              ${nama} baru saja menarik Rp ${nominal}
+            </p>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(toast);
+
+      setTimeout(() => {
+        toast.remove();
+      }, 4000);
+    }
+
+    const dummyWarga = [
+      { nama: "Budi S.", nominal: "150.000" },
+      { nama: "Siti A.", nominal: "150.000" },
+      { nama: "Pak RT Eko", nominal: "150.000" },
+      { nama: "Bu Heni", nominal: "150.000" },
+      { nama: "Rian K.", nominal: "150.000" }
+    ];
+
+    function triggerRandomNotification() {
+      const randomUser = dummyWarga[Math.floor(Math.random() * dummyWarga.length)];
+      showBonusToast(randomUser.nama, randomUser.nominal);
+    }
+
+    // Jalankan Toast begitu dashboard terbuka
+    setTimeout(triggerRandomNotification, 2000);
+    setInterval(triggerRandomNotification, 12000);
+  
   </script>
   
 </body>

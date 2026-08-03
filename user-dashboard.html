@@ -315,6 +315,225 @@
     </div>
   </div>
 
+  <!-- TOAST NOTIFIKASI PENCAIRAN SALDO AUTOMATIS -->
+  <div id="toast-withdrawal" class="toast-withdrawal-container hidden">
+    <div class="toast-icon">🎉</div>
+    <div class="toast-body">
+      <div class="toast-title">Pencairan Saldo Berhasil!</div>
+      <div class="toast-desc" id="toast-withdrawal-text"><b>Darwin Simanjuntak</b> baru saja mencairkan saldo <b>Rp 100.000</b></div>
+    </div>
+  </div>
+
+  <!-- Firebase SDK v8 CDN -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+  <!-- Script Logika Utama -->
+  <script src="Script.js"></script>
+  
+</body>
+</html>
+      </div>
+    </div>
+
+    <!-- ================= 3. HALAMAN ISI SALDO (QRIS & ACC ADMIN) ================= -->
+    <div id="view-isisaldo" class="view-section hidden">
+      <div class="glass-card">
+        <h2 class="page-card-title text-success">📥 Isi Saldo / Setor Kas</h2>
+        <p class="subtitle text-center">Scan QRIS di bawah lalu input nominal transfer Anda untuk diverifikasi Admin</p>
+
+        <!-- QRIS IMAGE GAMBAR KARTU -->
+        <div class="qris-card-wrapper">
+          <img src="qr_ID1026518729979_21.06.26_178202688_1782026888715.jpeg" alt="QRIS DANA Bisnis" class="qris-img" style="max-width: 200px; width: 100%; height: auto; border-radius: 12px; display: block; margin: 0 auto 10px auto;">
+          <p class="qris-owner">a.n TABUNGAN RAKYAT / BENDAHARA</p>
+          <p class="qris-payment-methods">Menerima: DANA, OVO, GoPay, ShopeePay & All Banking</p>
+          
+          <a href="qr_ID1026518729979_21.06.26_178202688_1782026888715.jpeg" download="QRIS-Tabungan-Rakyat.jpeg" class="btn-download-qris">
+            📥 Simpan QRIS (HD)
+          </a>
+        </div>
+
+        <div class="input-group">
+          <label>Nominal yang Di-transfer (Rp)</label>
+          <input type="number" id="topup-amount" placeholder="Contoh: 50000" class="input-glass" required>
+        </div>
+
+        <button id="btn-submit-topup" class="btn-glass btn-success">
+          ✅ Konfirmasi Sudah Transfer (Kirim ke Admin)
+        </button>
+      </div>
+    </div>
+
+    <!-- ================= 4. HALAMAN LIVE CHAT BENDAHARA ================= -->
+    <div id="view-chat" class="view-section hidden">
+      <div class="glass-card chat-card-padding">
+        <h3 class="section-card-title">💬 Admin Live Chat</h3>
+        <div class="chat-container" id="user-chat-box">
+          <div class="empty-state">Belum ada obrolan. Ketik pesan di bawah untuk berkonsultasi dengan Bendahara!</div>
+        </div>
+        <div class="chat-input-row">
+          <input type="text" id="chat-input" placeholder="Ketik pesan..." class="chat-input-field">
+          <button id="btn-send-chat" class="btn-send-chat">Kirim</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= 5. HALAMAN RIWAYAT DENGAN FILTER ================= -->
+    <div id="view-history" class="view-section hidden">
+      <div class="glass-card">
+        <h3 class="section-card-title">📜 Semua Riwayat Transaksi</h3>
+        
+        <!-- FILTER KATEGORI & TANGGAL -->
+        <div class="filter-box-wrapper">
+          <div class="filter-row-top">
+            <select id="filter-type" class="filter-select">
+              <option value="ALL">Semua Jenis Transaksi</option>
+              <option value="Nabung">Nabung / Setor</option>
+              <option value="Tarik">Tarik Saldo</option>
+              <option value="Transfer">Kirim / Terima Saldo</option>
+              <option value="Iuran Arisan">Iuran Arisan</option>
+              <option value="Pinjaman">Pinjaman</option>
+              <option value="Iuran Warga">Iuran Warga</option>
+            </select>
+          </div>
+          <div class="filter-row-date">
+            <input type="date" id="filter-start-date" class="filter-date-input">
+            <span class="date-sep">s/d</span>
+            <input type="date" id="filter-end-date" class="filter-date-input">
+          </div>
+        </div>
+
+        <div id="list-all-history">
+          <div class="empty-state">Belum ada riwayat transaksi.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- NAVIGATION BAR CONTAINER (5 MENU UTAMA) -->
+  <div class="bottom-bar">
+    <button class="nav-btn active" id="nav-btn-beranda"><span class="icon">🏠</span><span>Beranda</span></button>
+    <button class="nav-btn" id="nav-btn-aktivitas"><span class="icon">📊</span><span>Aktivitas</span></button>
+    
+    <!-- TOMBOL TENGAH ISI SALDO (QRIS) -->
+    <div class="center-btn-wrapper">
+      <button class="nav-btn-center" id="nav-btn-isisaldo">
+        <span class="plus-icon">+</span>
+        <span>Isi Saldo</span>
+      </button>
+      <div id="nav-dummy" class="nav-btn hidden"></div>
+    </div>
+    
+    <button class="nav-btn" id="nav-btn-chat"><span class="icon">💬</span><span>Live Chat</span></button>
+    <!-- TOMBOL 3 GARIS PENGATURAN APLIKASI -->
+    <button class="nav-btn" id="nav-btn-settings"><span class="icon">☰</span><span>Aplikasi</span></button>
+  </div>
+
+  <!-- ================= MODAL 1: KIRIM SALDO ANTAR WARGA ================= -->
+  <div id="modal-kirim" class="modal-overlay hidden">
+    <div class="modal-content">
+      <button class="modal-close btn-close-modal" data-modal="modal-kirim">✕</button>
+      <h3 class="modal-title">💸 Kirim Saldo ke Warga</h3>
+      <p class="subtitle text-center">Transfer saldo tabungan ke sesama warga</p>
+      
+      <div class="input-group">
+        <label>Username Warga Penerima</label>
+        <input type="text" id="send-target-user" placeholder="Masukkan username penerima (tanpa @)" class="input-glass" required autocomplete="off">
+      </div>
+
+      <div class="input-group">
+        <label>Nominal Transfer (Rp)</label>
+        <input type="number" id="send-amount" placeholder="Jumlah transfer" class="input-glass" required>
+      </div>
+
+      <div class="input-group">
+        <label>Catatan / Pesan (Opsional)</label>
+        <input type="text" id="send-note" placeholder="Contoh: Bayar kas / hutang" class="input-glass">
+      </div>
+
+      <button id="btn-submit-kirim" class="btn-glass">Kirim Sekarang</button>
+    </div>
+  </div>
+
+  <!-- ================= MODAL 2: PINJAM SALDO ================= -->
+  <div id="modal-pinjam" class="modal-overlay hidden">
+    <div class="modal-content">
+      <button class="modal-close btn-close-modal" data-modal="modal-pinjam">✕</button>
+      <h3 class="modal-title text-warning">🤝 Ajukan Pinjaman Saldo</h3>
+      <p class="modal-desc">Pengajuan pinjaman akan ditinjau dan disetujui oleh Bendahara.</p>
+      
+      <div class="input-group">
+        <label>Nominal Pinjaman (Rp)</label>
+        <input type="number" id="loan-amount" placeholder="Contoh: 100000" class="input-glass">
+      </div>
+      <div class="input-group">
+        <label>Alasan Pinjaman</label>
+        <input type="text" id="loan-reason" placeholder="Keperluan mendesak" class="input-glass">
+      </div>
+      <button id="btn-submit-pinjam" class="btn-glass btn-warning">Ajukan Pinjaman</button>
+    </div>
+  </div>
+
+  <!-- ================= MODAL 3: TARIK SALDO ================= -->
+  <div id="modal-tarik" class="modal-overlay hidden">
+    <div class="modal-content">
+      <button class="modal-close btn-close-modal" data-modal="modal-tarik">✕</button>
+      <h3 class="modal-title">🏧 Tarik Saldo ke Rekening</h3>
+      
+      <div class="input-group">
+        <label>Nominal Penarikan (Rp)</label>
+        <input type="number" id="withdraw-amount" placeholder="Contoh: 50000" class="input-glass">
+      </div>
+      <button id="btn-submit-tarik" class="btn-glass">Ajukan Penarikan</button>
+    </div>
+  </div>
+
+  <!-- ================= MODAL 4: PENGATURAN PROFIL ================= -->
+  <div id="modal-profil" class="modal-overlay hidden">
+    <div class="modal-content">
+      <button class="modal-close btn-close-modal" data-modal="modal-profil">✕</button>
+      <h3 class="modal-title">⚙️ Pengaturan Profil Warga</h3>
+      
+      <div class="profile-detail-list">
+        <div><b>Nama Lengkap:</b> <span id="prof-fullname">-</span></div>
+        <div><b>Username:</b> <span id="prof-username">-</span></div>
+        <div><b>Email:</b> <span id="prof-email">-</span></div>
+        <div><b>Nomor HP:</b> <span id="prof-phone">-</span></div>
+        <div><b>Bank / E-Wallet:</b> <span id="prof-bank" style="color: #4ade80;">-</span></div>
+        <div><b>Nama Rekening:</b> <span id="prof-acc-name">-</span></div>
+        <div><b>Nomor Rekening:</b> <span id="prof-acc-num" style="font-family: monospace;">-</span></div>
+        <div><b>Kota Lahir:</b> <span id="prof-pob">-</span></div>
+        <div><b>Tanggal Lahir:</b> <span id="prof-dob">-</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODAL 5: PENGATURAN APLIKASI (3 GARIS ☰) ================= -->
+  <div id="modal-app-settings" class="modal-overlay hidden">
+    <div class="modal-content">
+      <button class="modal-close btn-close-modal" data-modal="modal-app-settings">✕</button>
+      <h3 class="modal-title">☰ Pengaturan Aplikasi</h3>
+      
+      <div class="setting-item-row">
+        <span>Mode Tampilan</span>
+        <button id="btn-theme-toggle" class="btn-toggle-theme">🌙 Mode Gelap</button>
+      </div>
+
+      <div id="btn-faq" class="setting-item-link">
+        ❓ FAQ (Pertanyaan Umum)
+      </div>
+
+      <div id="btn-about" class="setting-item-link">
+        ℹ️ Tentang Aplikasi
+      </div>
+
+      <div id="btn-app-logout" class="setting-item-logout">
+        🚪 Logout / Keluar
+      </div>
+    </div>
+  </div>
+
   <!-- TOAST NOTIFIKASI PENCAIRAN SALDO AUTOMATIS (MELAYANG DI ATAS LAYAR) -->
   <div id="toast-withdrawal" class="toast-withdrawal-container hidden">
     <div class="toast-icon">🎉</div>

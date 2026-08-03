@@ -799,3 +799,58 @@ td { padding: 12px 14px; border-bottom: 1px solid rgba(255,255,255,0.05); vertic
   .btn-toggle-menu { display: block; }
   .content-body { padding: 15px; }
 }
+
+/* ==========================================
+   FIX UKURAN GAMBAR QRIS AGAR PAS DI HP
+   ========================================== */
+.qris-card-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 15px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 15px auto 20px auto;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.qris-img {
+  width: 100% !important;
+  max-width: 200px !important; /* Ukuran pas untuk layar HP */
+  height: auto !important;
+  object-fit: contain;
+  border-radius: 12px;
+  margin: 0 auto 10px auto;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  display: block;
+}
+
+.qris-owner {
+  font-weight: bold;
+  font-size: 13px;
+  color: #4ade80;
+  margin-bottom: 4px;
+}
+
+.qris-payment-methods {
+  font-size: 11px;
+  color: #94a3b8;
+  margin-bottom: 12px;
+}
+
+.btn-download-qris {
+  display: inline-block;
+  padding: 8px 16px;
+  background: rgba(74, 222, 128, 0.15);
+  border: 1px solid #4ade80;
+  color: #4ade80;
+  border-radius: 8px;
+  font-size: 12px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}

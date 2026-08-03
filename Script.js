@@ -1024,7 +1024,7 @@ function editSaldo(username) {
 }
 
 function tegurWarga(username) {
-  const msg = prompt(`Kirim teguran ke @${username}:`, "Silakan lakukan verifikasi setor tabungan ke Bendahara.");
+  const msg = prompt(`Kirim teguran ke @${username}:`, "Halo! Akun Anda saat ini belum aktif secara penuh. Lakukan setoran awal sebesar Rp50.000 untuk menyelesaikan aktivasi akun dan klaim bonus pendaftaran Anda...");
   if (msg) db.ref("users/" + username).update({ warning: msg });
 }
 

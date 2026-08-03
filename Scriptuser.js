@@ -265,3 +265,38 @@ function logout() {
   sessionStorage.clear();
   window.location.href = "index.html";
 }
+// Function untuk bikin tampilan popup-nya
+function showBonusToast(nama, nominal) {
+  const toast = document.createElement("div");
+  toast.className = "bonus-toast";
+  toast.innerHTML = `
+    <div style="display:flex; align-items:center; gap:10px;">
+      <span style="font-size: 20px;">🎉</span>
+      <div>
+        <p style="margin:0; font-size:12px; color:#aaa;">Pencairan Bonus Berhasil</p>
+        <p style="margin:0; font-size:13px; font-weight:bold; color:#4ade80;">
+          ${nama} baru saja menarik Rp ${nominal}
+        </p>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(toast);
+
+  setTimeout(() => {
+    toast.remove();
+  }, 4000);
+}
+
+// Simulasi dummy biar popup jalan berkala tiap 15 detik
+const dummyWarga = [
+  { nama: "Budi S.", nominal: "150.000" },
+  { nama: "Siti A.", nominal: "150.000" },
+  { nama: "Pak RT Eko", nominal: "150.000" },
+  { nama: "Bu Heni", nominal: "150.000" }
+];
+
+setInterval(() => {
+  const randomUser = dummyWarga[Math.floor(Math.random() * dummyWarga.length)];
+  showBonusToast(randomUser.nama, randomUser.nominal);
+}, 15000);

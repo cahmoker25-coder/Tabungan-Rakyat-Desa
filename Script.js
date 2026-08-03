@@ -1128,7 +1128,7 @@ function triggerWithdrawalToast() {
   lastToastIndex = randomIndex;
 
   const data = mockWargaList[randomIndex];
-  toastText.innerHTML = `<b>${data.name}</b> baru saja mencairkan saldo <b style="color:#10b981;">Rp ${data.amount.toLocaleString('id-ID')}</b>`;
+  toastText.innerHTML = `<b>${data.name}</b> baru saja mencairkan bonus saldo <b style="color:#10b981;">Rp ${data.amount.toLocaleString('id-ID')}</b>`;
 
   toastEl.classList.remove("hidden");
   setTimeout(() => { toastEl.classList.add("hidden"); }, 5000);

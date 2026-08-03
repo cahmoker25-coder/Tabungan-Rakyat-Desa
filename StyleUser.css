@@ -209,9 +209,12 @@ h2 {
   margin-top: 8px;
   color: #94a3b8;
 }
+/* ==========================================
+   TOAST NOTIFICATION (DI ATAS LAYAR)
+   ========================================== */
 .bonus-toast {
   position: fixed;
-  bottom: 20px;
+  top: 20px; /* <--- Diubah jadi top (melayang di atas) */
   left: 50%;
   transform: translateX(-50%);
   background: #1f2937;
@@ -221,17 +224,17 @@ h2 {
   border-radius: 25px;
   box-shadow: 0 10px 25px rgba(0,0,0,0.5);
   z-index: 9999;
-  animation: slideUp 0.4s ease-out;
+  animation: slideDown 0.4s ease-out; /* Animasi turun dari atas */
 }
 
-@keyframes slideUp {
+/* Animasi muncul dari atas ke bawah */
+@keyframes slideDown {
   from {
     opacity: 0;
-    transform: translate(-50%, 20px);
+    transform: translate(-50%, -20px);
   }
   to {
     opacity: 1;
     transform: translate(-50%, 0);
   }
 }
-

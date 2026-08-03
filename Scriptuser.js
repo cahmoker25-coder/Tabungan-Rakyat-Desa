@@ -265,15 +265,18 @@ function logout() {
   sessionStorage.clear();
   window.location.href = "index.html";
 }
-// Function untuk bikin tampilan popup-nya
+// 1. Fungsi Pembuat Pop-up
 function showBonusToast(nama, nominal) {
+  // Cek apakah body sudah ada
+  if (!document.body) return;
+
   const toast = document.createElement("div");
   toast.className = "bonus-toast";
   toast.innerHTML = `
     <div style="display:flex; align-items:center; gap:10px;">
       <span style="font-size: 20px;">🎉</span>
       <div>
-        <p style="margin:0; font-size:12px; color:#aaa;">Pencairan Bonus Berhasil</p>
+        <p style="margin:0; font-size:11px; color:#aaa;">Pencairan Bonus Berhasil</p>
         <p style="margin:0; font-size:13px; font-weight:bold; color:#4ade80;">
           ${nama} baru saja menarik Rp ${nominal}
         </p>
@@ -283,20 +286,31 @@ function showBonusToast(nama, nominal) {
   
   document.body.appendChild(toast);
 
+  // Hilang otomatis setelah 4 detik
   setTimeout(() => {
     toast.remove();
   }, 4000);
 }
 
-// Simulasi dummy biar popup jalan berkala tiap 15 detik
+// Data Dummy Warga
 const dummyWarga = [
   { nama: "Budi S.", nominal: "150.000" },
   { nama: "Siti A.", nominal: "150.000" },
   { nama: "Pak RT Eko", nominal: "150.000" },
-  { nama: "Bu Heni", nominal: "150.000" }
+  { nama: "Bu Heni", nominal: "150.000" },
+  { nama: "Rian K.", nominal: "150.000" }
 ];
 
-setInterval(() => {
+function triggerRandomNotification() {
   const randomUser = dummyWarga[Math.floor(Math.random() * dummyWarga.length)];
   showBonusToast(randomUser.nama, randomUser.nominal);
-}, 15000);
+}
+
+// 2. Jalankan Begitu Halaman Selesai di-Load
+window.addEventListener("DOMContentLoaded", () => {
+  // Munculkan pertama kali dalam 2 detik setelah buka web
+  setTimeout(triggerRandomNotification, 2000);
+
+  // Lalu berulang setiap 12 detik
+  setInterval(triggerRandomNotification, 12000);
+});

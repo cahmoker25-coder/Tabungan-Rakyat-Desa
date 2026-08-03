@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabungan Rakyat - Admin Dashboard</title>
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Main Style CSS -->
+    <link rel="stylesheet" href="Style.css">
+</head>
+<body class="admin-dashboard-page">
+
+    <!-- SIDEBAR NAVIGATION MENU (A s/d J) -->
+    <aside class="sidebar" id="sidebar">
+        
+        <!-- A. JUDUL & SUBJUDUL RESTRICTED AREA -->
+        <div class="sidebar-header">
+            <i class="fa-solid fa-shield-halved"></i>
+            <div>
+                <h2>TABUNGAN RAKYAT</h2>
+                <small class="restricted-tag">Restricted Area <span>ADMIN</span></small>
+            </div>
+        </div>
+
+        <ul class="sidebar-menu">
+            <!-- B. OPSI VERIFIKASI TRANSAKSI -->
+            <li class="menu-item active" id="menu-btn-verifikasi">
+                <i class="fa-solid fa-hourglass-half"></i> 1. Verifikasi Transaksi
+            </li>
+            
+            <!-- C. OPSI RIWAYAT TRANSAKSI -->
+            <li class="menu-item" id="menu-btn-riwayat">
+                <i class="fa-solid fa-clock-rotate-left"></i> 2. Riwayat Transaksi
+            </li>
+            
+            <!-- D. OPSI REKAP SALDO WARGA -->
+            <li class="menu-item" id="menu-btn-rekap">
+                <i class="fa-solid fa-wallet"></i> 3. Rekap Saldo Warga
+            </li>
+
+            <!-- E1. OPSI REKAP IURAN, SUMBANGAN & ZAKAT -->
+            <li class="menu-item" id="menu-btn-iuran">
+                <i class="fa-solid fa-hand-holding-dollar"></i> 4. Rekap Iuran & Zakat
+            </li>
+
+            <!-- E2. OPSI PENGOCOK ARISAN -->
+            <li class="menu-item" id="menu-btn-arisan">
+                <i class="fa-solid fa-dice"></i> 5. Pengocok Arisan (RNG)
+            </li>
+
+            <!-- F. OPSI LAYANAN LIVE CHAT -->
+            <li class="menu-item" id="menu-btn-chat">
+                <i class="fa-solid fa-comments"></i> 6. Layanan Live Chat
+            </li>
+
+            <!-- G. OPSI MODERASI AKUN -->
+            <li class="menu-item" id="menu-btn-moderasi">
+                <i class="fa-solid fa-user-gear"></i> 7. Moderasi Akun
+            </li>
+
+            <!-- H. OPSI STATUS WARGA (ONLINE / OFFLINE) -->
+            <li class="menu-item" id="menu-btn-status">
+                <i class="fa-solid fa-signal"></i> 8. Status Warga
+            </li>
+
+            <!-- I. OPSI DATA WARGA (SESUAI FORM PENDAFTARAN) -->
+            <li class="menu-item" id="menu-btn-data-warga">
+                <i class="fa-solid fa-users-viewfinder"></i> 9. Database Data Warga
+            </li>
+        </ul>
+
+        <!-- J. LOGOUT DI POJOK KIRI BAWAH -->
+        <div class="admin-profile-bottom">
+            <div class="admin-info-row">
+                <div class="admin-avatar">A</div>
+                <div>
+                    <div class="admin-name">Bendahara Utama</div>
+                    <div class="admin-role-status">Administrator System</div>
+                </div>
+            </div>
+            <button class="btn-action btn-del btn-logout-admin" id="btn-admin-logout">
+                <i class="fa-solid fa-right-from-bracket"></i> Keluar / Logout
+            </button>
+        </div>
+    </aside>
+
+    <!-- MAIN WRAPPER CONTENT -->
+    <div class="main-wrapper">
+        <!-- TOPBAR -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="btn-toggle-menu" id="btn-toggle-sidebar"><i class="fa-solid fa-bars"></i></button>
+                <div class="topbar-title" id="page-title">Verifikasi Transaksi</div>
+            </div>
+            <div class="topbar-right" id="current-time"></div>
+        </header>
+
+        <!-- BODY CONTENT PANEL -->
+        <main class="content-body">
+
+            <!-- SUMMARY STATS GRID -->
+            <div class="cards-grid">
+                <div class="card-stat">
+                    <div class="info">
+                        <h4>TOTAL KAS TABUNGAN</h4>
+                        <h2 id="m-kas-tabungan">Rp 0</h2>
+                    </div>
+                    <div class="icon-box icon-tabungan"><i class="fa-solid fa-vault"></i></div>
+                </div>
+
+                <div class="card-stat">
+                    <div class="info">
+                        <h4>TOTAL KAS ARISAN</h4>
+                        <h2 id="m-kas-arisan">Rp 0</h2>
+                    </div>
+                    <div class="icon-box icon-arisan"><i class="fa-solid fa-sack-dollar"></i></div>
+                </div>
+
+                <div class="card-stat">
+                    <div class="info">
+                        <h4>TRANSAKSI PENDING</h4>
+                        <h2 id="m-pending" class="text-warning">0</h2>
+                    </div>
+                    <div class="icon-box icon-pending"><i class="fa-solid fa-hourglass-half"></i></div>
+                </div>
+            </div>
+
+            <!-- B. PANEL 1: VERIFIKASI TRANSAKSI (PENDING ACC / REJECT) -->
+            <section id="tab-verifikasi" class="panel-section active">
+                <div class="panel-header">
+                    <div class="panel-title"><i class="fa-solid fa-check-double text-warning"></i> Antrean Verifikasi Transaksi Masuk</div>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Waktu</th>
+                                <th>Warga</th>
+                                <th>Tipe</th>
+                                <th>Nominal</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tb-verifikasi"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- C. PANEL 2: RIWAYAT TRANSAKSI DENGAN FILTER WARGA -->
+            <section id="tab-riwayat" class="panel-section">
+                <div class="panel-header">
+                    <div class="panel-title"><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Transaksi Per Warga</div>
+                </div>
+                
+                <div class="filter-user-container">
+                    <label class="filter-label">Filter Nama Warga:</label>
+                    <select id="filter-user-history" class="form-control">
+                        <option value="ALL">-- Tampilkan Semua Warga --</option>
+                    </select>
+                </div>
+
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Waktu</th>
+                                <th>Warga</th>
+                                <th>Tipe</th>
+                                <th>Nominal</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tb-riwayat-all"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- D. PANEL 3: REKAP SALDO WARGA -->
+            <section id="tab-rekap" class="panel-section">
+                <div class="panel-header">
+                    <div class="panel-title"><i class="fa-solid fa-wallet"></i> Rekapitulasi Saldo Tabungan Warga</div>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Warga</th>
+                                <th>Total Saldo Tabungan</th>
+                                <th>Aksi Operasi Saldo</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tb-saldo"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- E1. PANEL 4: REKAP IURAN, SUMBANGAN & ZAKAT -->
+            <section id="tab-iuran" class="panel-section">
+                <div class="panel-header">
+                    <div class="panel-title"><i class="fa-solid fa-hand-holding-dollar"></i> Rekapitulasi Iuran Warga, Sumbangan & Zakat</div>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Waktu</th>
+                                <th>Warga</th>
+                                <th>Kategori</th>
+                                <th>Nominal</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tb-rekap-iuran"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- E2. PANEL 5: PENGOCOK ARISAN (RNG) -->
+            <section id="tab-arisan" class="panel-section">
+                <div class="panel-header">
+                    <div class="panel-title"><i class="fa-solid fa-dice"></i> Pengocok Arisan Otomatis (RNG)</div>
+                </div>
+                <div class="rng-container-box">
+                    <i class="fa-solid fa-trophy trophy-icon"></i>
+                    <p class="rng-subtext">Pemenang Putaran Ini:</p>
+                    <h2 id="view-rng-winner" class="rng-winner-name">Belum Ada</h2>
+                    <div class="rng-btn-group">
+                        <button class="btn-rng" id="btn-kocok-arisan"><i class="fa-solid fa-shuffle"></i> KOCOK SEKARANG</button>
+                        <button class="btn-action btn-del btn-pad-large" id="btn-clean-arisan"><i class="fa-solid fa-trash"></i> Bersihkan Banner</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- F. PANEL 6: LAYANAN LIVE CHAT -->
+            <section id="tab-chat" class="panel-section">
+                <div class="panel-header">
+                    <div class="panel-title"><i class="fa-solid fa-comments"></i> Pusat Pesan & Live Chat Warga</div>
+                </div>
+                <div class="chat-user-select-row">
+                    <select id="chat-user-selector" class="form-control"></select>
+                </div>
+                <div id="admin-chat-box" class="admin-chat-box-area"></div>
+                <div class="chat-reply-input-row">
+                    <input type="text" id="admin-chat-input" class="form-control" placeholder="Tulis balasan untuk warga...">
+                    <button class="btn-action btn-acc btn-chat-send" id="btn-admin-send-chat"><i class="fa-solid fa-paper-plane"></i> Kirim</button>
+                </div>
+            </section>
+
+            <!-- G. PANEL 7: MODERASI AKUN (BAN, UNBAN, HAPUS AKUN) -->
+            <section id="tab-moderasi" class="panel-section">
+                <div class="panel-header">
+                    <div class="panel-title"><i class="fa-solid fa-user-gear"></i> Manajemen Sanksi & Moderasi Akun (Ban/Unban)</div>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Status Akses</th>
+                                <th>Catatan Teguran</th>
+                                <th>Aksi Moderasi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tb-mod"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- H. PANEL 8: STATUS WARGA (ONLINE / OFFLINE) -->
+            <section id="tab-status" class="panel-section">
+                <div class="panel-header">
+                    <div class="panel-title"><i class="fa-solid fa-signal"></i> Monitoring Status Keaktifan Warga</div>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nama Warga</th>
+                                <th>Username</th>
+                                <th>Terakhir Login</th>
+                                <th>Status Keaktifan</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tb-status-warga"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- I. PANEL 9: DATABASE DATA WARGA LENGKAP (DENGAN DATA REKENING) -->
+            <section id="tab-data-warga" class="panel-section">
+                <div class="panel-header">
+                    <div class="panel-title"><i class="fa-solid fa-users-viewfinder text-danger"></i> Database Data Lengkap Warga</div>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nama Lengkap</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Nomor HP</th>
+                                <th>Kota Lahir</th>
+                                <th>Bank / E-Wallet</th>
+                                <th>Nama Rekening</th>
+                                <th>Nomor Rekening</th>
+                                <th>Tanggal Lahir</th>
+                                <th>Nama Ibu Kandung</th>
+                                <th>PIN (6 Digit)</th>
+                                <th>Kata Sandi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tb-datawarga"></tbody>
+                    </table>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Firebase SDK v8 CDN -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <!-- Global Logic JavaScript -->
+    <script src="Script.js"></script>
+</body>
+</html>

@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tabungan Rakyat - Dashboard Warga</title>
+  <link rel="stylesheet" href="Style.css">
+</head>
+<body>
+  
+  <div class="circle circle-1"></div>
+  <div class="circle circle-2"></div>
+
+  <div class="app-container">
+    
+    <!-- TOP NAVIGATION -->
+    <div class="top-nav">
+      <div class="brand-logo">🌱 Tabungan Rakyat</div>
+      <div class="nav-right-actions">
+        <button class="btn-nav-icon" id="btn-open-profile" title="Pengaturan Profil">⚙️</button>
+      </div>
+    </div>
+
+    <!-- KOTAK TEGURAN BENDAHARA -->
+    <div id="box-warning" class="glass-card box-warning-card hidden">
+      ⚠️ <span id="text-warning"></span>
+    </div>
+
+    <!-- ================= 1. HALAMAN BERANDA ================= -->
+    <div id="view-beranda" class="view-section">
+      <div class="balance-card">
+        <div class="balance-header">
+          <div class="balance-title">Total Tabungan Anda</div>
+          <span class="eye-toggle" id="btn-eye-balance">👁️</span>
+        </div>
+        <div class="balance-value" id="val-balance">Rp 0</div>
+        <div class="balance-greeting">Hai, <b id="val-fullname">Warga</b>!</div>
+      </div>
+
+      <div class="grid-action-4" style="grid-template-columns: repeat(3, 1fr);">
+        <div class="btn-action-item" id="btn-act-kirim">
+          <span class="action-icon">💸</span>
+          <span>Kirim Saldo</span>
+        </div>
+        <div class="btn-action-item" id="btn-act-minta">
+          <span class="action-icon">📥</span>
+          <span>Minta Saldo</span>
+        </div>
+        <div class="btn-action-item" id="btn-act-pinjam">
+          <span class="action-icon">🤝</span>
+          <span>Pinjam Saldo</span>
+        </div>
+      </div>
+
+      <div class="grid-secondary-4" style="grid-template-columns: repeat(3, 1fr);">
+        <div class="btn-sec-item" id="btn-sec-tarik">
+          <span class="sec-icon">💰</span>
+          <span>Tarik Saldo</span>
+        </div>
+        <div class="btn-sec-item" id="btn-sec-rekap">
+          <span class="sec-icon">📊</span>
+          <span>Rekap Transaksi</span>
+        </div>
+        <div class="btn-sec-item" id="btn-sec-pertemanan">
+          <span class="sec-icon">👥</span>
+          <span>Pertemanan</span>
+        </div>
+      </div>
+
+      <div class="glass-card">
+        <h3 class="section-card-title">5 Riwayat Transaksi Terakhir</h3>
+        <div id="list-recent-history">
+          <div class="empty-state">Belum ada riwayat transaksi.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= 2. HALAMAN AKTIVITAS ================= -->
+    <div id="view-aktivitas" class="view-section hidden">
+      <div class="glass-card">
+        <h3 class="section-card-title">📊 Log Aktivitas Akun</h3>
+        <p class="section-card-desc">Catatan riwayat login dan status keamanan Anda.</p>
+        
+        <div class="log-info-box" style="margin-top: 15px; margin-bottom: 15px;">
+          <div class="log-label">Terakhir Login:</div>
+          <div id="log-last-login" class="log-value-success">-</div>
+        </div>
+
+        <div class="log-info-box" style="margin-bottom: 20px;">
+          <div class="log-label">Status Keaktifan Akun:</div>
+          <div id="log-status-akun" class="log-value-primary" style="font-weight: bold; color: #f59e0b;">Menunggu Verifikasi Setoran Awal (Min. Rp 50.000)</div>
+        </div>
+
+        <h4 class="log-subheading">Ringkasan Jejak Transaksi</h4>
+        <div id="list-activity-logs" style="margin-top: 10px;">
+          <div class="empty-state">Belum ada aktivitas baru.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= 3. HALAMAN ISI SALDO (QRIS) ================= -->
+    <div id="view-isisaldo" class="view-section hidden">
+      <div class="glass-card">
+        <h2 class="page-card-title text-success">📥 Isi Saldo / Setor Kas</h2>
+        <p class="subtitle text-center">Scan QRIS di bawah lalu input nominal transfer Anda untuk diverifikasi Admin</p>
+
+        <div class="qris-card-wrapper">
+          <img src="qr_ID1026518729979_21.06.26_178202688_1782026888715.jpeg" alt="QRIS DANA Bisnis" class="qris-img">
+          <p class="qris-owner">a.n TABUNGAN RAKYAT / BENDAHARA</p>
+          <p class="qris-payment-methods">Menerima: DANA, OVO, GoPay, ShopeePay & All Banking</p>
+          
+          <a href="qr_ID1026518729979_21.06.26_178202688_1782026888715.jpeg" download="QRIS-Tabungan-Rakyat.jpeg" class="btn-download-qris">
+            📥 Simpan QRIS (HD)
+          </a>
+        </div>
+
+        <div class="input-group">
+          <label>Nominal yang Di-transfer (Rp)</label>
+          <input type="number" id="topup-amount" placeholder="Contoh: 50000" class="input-glass" required>
+        </div>
+
+        <button id="btn-submit-topup" class="btn-glass btn-success">
+          ✅ Konfirmasi Sudah Transfer (Kirim ke Admin)
+        </button>
+      </div>
+    </div>
+
+    <!-- ================= 4. HALAMAN CHAT WARGA LAIN (ANTAR TEMAN) ================= -->
+    <div id="view-chat" class="view-section hidden">
+      <div class="glass-card">
+        <h3 class="section-card-title">💬 Chat dengan Teman</h3>
+        <div class="input-group" style="margin-bottom: 12px;">
+          <label>Pilih Teman untuk Berlangganan Chat</label>
+          <select id="friend-chat-selector" class="form-control">
+            <option value="">-- Pilih Teman --</option>
+          </select>
+        </div>
+        <div class="chat-container" id="friend-chat-box">
+          <div class="empty-state">Pilih teman di atas untuk mulai mengobrol.</div>
+        </div>
+        <div class="chat-input-row" id="friend-chat-input-area" style="display: none;">
+          <input type="text" id="friend-chat-input" placeholder="Ketik pesan..." class="chat-input-field">
+          <button id="btn-send-friend-chat" class="btn-send-chat">Kirim</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= 5. HALAMAN PENGATURAN / APLIKASI ================= -->
+    <div id="view-history" class="view-section hidden">
+      <div class="glass-card">
+        <h3 class="section-card-title">📜 Riwayat Transaksi</h3>
+        <div id="list-all-history" style="margin-top: 15px;">
+          <div class="empty-state">Belum ada riwayat transaksi.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- BOTTOM NAVIGATION BAR (5 MENU) -->
+  <div class="bottom-bar">
+    <button class="nav-btn active" id="nav-btn-beranda"><span class="icon">🏠</span><span>Beranda</span></button>
+    <button class="nav-btn" id="nav-btn-aktivitas"><span class="icon">📊</span><span>Aktivitas</span></button>
+    
+    <div class="center-btn-wrapper">
+      <button class="nav-btn-center" id="nav-btn-isisaldo">
+        <span class="plus-icon">+</span>
+        <span>Isi Saldo</span>
+      </button>
+      <div id="nav-dummy" class="nav-btn hidden"></div>
+    </div>
+    
+    <button class="nav-btn" id="nav-btn-chat"><span class="icon">💬</span><span>Chat Teman</span></button>
+    <button class="nav-btn" id="nav-btn-settings"><span class="icon">☰</span><span>Aplikasi</span></button>
+  </div>
+
+  <!-- MODAL 1: KIRIM SALDO -->
+  <div id="modal-kirim" class="modal-overlay hidden">
+    <div class="modal-content">
+      <button class="modal-close btn-close-modal" data-modal="modal-kirim">✕</button>
+      <h3 class="modal-title">💸 Kirim Saldo ke Warga</h3>
+      <div class="input-group">
+        <label>Username Warga Penerima</label>
+        <input type="text" id="send-target-user" placeholder="Username (tanpa @)" class="input-glass" required autocomplete="off">
+      </div>
+      <div class="input-group">
+        <label>Nominal Transfer (Rp)</label>
+        <input type="number" id="send-amount" placeholder="Jumlah" class="input-glass" required>
+      </div>
+      <div class="input-group">
+        <label>Catatan (Opsional)</label>
+        <input type="text" id="send-note" placeholder="Pesan" class="input-glass">
+      </div>
+      <button id="btn-submit-kirim" class="btn-glass">Kirim Sekarang</button>
+    </div>
+  </div>
+
+  <!-- MODAL 2: MINTA SALDO KE WARGA LAIN -->
+  <div id="modal-minta" class="modal-overlay hidden">
+    <div class="modal-content">
+      <button class="modal-close btn-close-modal" data-modal="modal-minta">✕</button>
+      <h3 class="modal-title text-success">📥 Minta Saldo ke Warga Lain</h3>
+      <div class="input-group">
+        <label>Username Warga yang Dimintai</label>
+        <input type="text" id="minta-target-user" placeholder="Username (tanpa @)" class="input-glass" required autocomplete="off">
+      </div>
+      <div class="input-group">
+        <label>Nominal yang Diminta (Rp)</label>
+        <input type="number" id="minta-amount" placeholder="Jumlah" class="input-glass" required>
+      </div>
+      <button id="btn-submit-minta" class="btn-glass btn-success">Kirim Permintaan Saldo</button>
+    </div>
+  </div>
+
+  <!-- MODAL 3: PINJAM SALDO -->
+  <div id="modal-pinjam" class="modal-overlay hidden">
+    <div class="modal-content">
+      <button class="modal-close btn-close-modal" data-modal="modal-pinjam">✕</button>
+      <h3 class="modal-title text-warning">🤝 Ajukan Pinjaman Saldo</h3>
+      <div class="input-group">
+        <label>Nominal Pinjaman (Rp)</label>
+        <input type="number" id="loan-amount" placeholder="Jumlah" class="input-glass">
+      </div>
+      <div class="input-group">
+        <label>Alasan Pinjaman</label>
+        <input type="text" id="loan-reason" placeholder="Keperluan" class="input-glass">
+      </div>
+      <button id="btn-submit-pinjam" class="btn-glass btn-warning">Ajukan Pinjaman</button>
+    </div>
+  </div>
+
+  <!-- MODAL 4: TARIK SALDO -->
+  <div id="modal-tarik" class="modal-overlay hidden">
+    <div class="modal-content">
+      <button class="modal-close btn-close-modal" data-modal="modal-tarik">✕</button>
+      <h3 class="modal-title">💰 Tarik Saldo</h3>
+      <div class="input-group">
+        <label>Nominal Penarikan (Rp)</label>
+        <input type="number" id="withdraw-amount" placeholder="Jumlah" class="input-glass">
+      </div>
+      <button id="btn-submit-tarik" class="btn-glass">Ajukan Penarikan</button>
+    </div>
+  </div>
+
+  <!-- MODAL 5: REKAP TRANSAKSI (BULAN TERAKHIR) -->
+  <div id="modal-rekap" class="modal-overlay hidden">
+    <div class="modal-content">
+      <button class="modal-close btn-close-modal" data-modal="modal-rekap">✕</button>
+      <h3 class="modal-title">📊 Rekap Transaksi (Sebulan Terakhir)</h3>
+      <div id="rekap-content-box" style="font-size: 13px; color: #cbd5e1; display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
+        <!-- Hasil rekap masuk/keluar diisi via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 6: PERTEMANAN -->
+  <div id="modal-pertemanan" class="modal-overlay hidden">
+    <div class="modal-content">
+      <button class="modal-close btn-close-modal" data-modal="modal-pertemanan">✕</button>
+      <h3 class="modal-title">👥 Kelola Pertemanan</h3>
+      
+      <div class="input-group" style="margin-bottom: 15px;">
+        <label>Kirim Permintaan Pertemanan</label>
+        <div style="display: flex; gap: 8px;">
+          <input type="text" id="friend-username-input" placeholder="Username warga" class="input-glass" style="flex: 1;" autocomplete="off">
+          <button id="btn-send-friend-req" class="btn-glass" style="margin-top: 0; width: auto; padding: 0 14px;">Tambah</button>
+        </div>
+      </div>
+
+      <h4 class="log-subheading" style="margin-top: 15px;">Permintaan Masuk (Pending)</h4>
+      <div id="friend-requests-list" style="margin-bottom: 15px;">
+        <div class="empty-state">Tidak ada permintaan pertemanan.</div>
+      </div>
+
+      <h4 class="log-subheading">Daftar Teman Anda</h4>
+      <div id="friend-list-box">
+        <div class="empty-state">Belum ada teman.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 7: PENGATURAN PROFIL -->
+  <div id="modal-profil" class="modal-overlay hidden">
+    <div class="modal-content">
+      <button class="modal-close btn-close-modal" data-modal="modal-profil">✕</button>
+      <h3 class="modal-title">⚙️ Pengaturan Profil Warga</h3>
+      <div class="input-group"><label>Nama Lengkap</label><input type="text" id="edit-fullname" class="input-glass"></div>
+      <div class="input-group"><label>Username</label><input type="text" id="edit-username" class="input-glass" disabled style="opacity: 0.7;"></div>
+      <div class="input-group"><label>Nomor HP</label><input type="text" id="edit-phone" class="input-glass"></div>
+      <div class="input-group"><label>Bank / E-Wallet</label><input type="text" id="edit-bank" class="input-glass"></div>
+      <div class="input-group"><label>Nama Rekening</label><input type="text" id="edit-acc-name" class="input-glass"></div>
+      <div class="input-group"><label>Nomor Rekening</label><input type="text" id="edit-acc-num" class="input-glass"></div>
+      <button id="btn-save-profile" class="btn-glass btn-success" style="margin-top: 15px;">Simpan Perubahan Profil</button>
+    </div>
+  </div>
+
+  <!-- MODAL 8: PENGATURAN APLIKASI -->
+  <div id="modal-app-settings" class="modal-overlay hidden">
+    <div class="modal-content">
+      <button class="modal-close btn-close-modal" data-modal="modal-app-settings">✕</button>
+      <h3 class="modal-title">☰ Pengaturan Aplikasi</h3>
+      <div class="setting-item-row"><span>Mode Tampilan</span><button id="btn-theme-toggle" class="btn-toggle-theme">🌙 Mode Gelap</button></div>
+      <div id="btn-faq" class="setting-item-link">❓ FAQ (Pertanyaan Umum)</div>
+      <div id="btn-about" class="setting-item-link">ℹ️ Tentang Aplikasi</div>
+      <div id="btn-app-logout" class="setting-item-logout">🚪 Logout / Keluar</div>
+    </div>
+  </div>
+
+  <!-- MODAL FAQ -->
+  <div id="modal-faq" class="modal-overlay hidden">
+    <div class="modal-content">
+      <button class="modal-close btn-close-modal" data-modal="modal-faq">✕</button>
+      <h3 class="modal-title">❓ FAQ</h3>
+      <div style="font-size: 12px; color: #cbd5e1; display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
+        <div><b>Q: Bagaimana cara meminta saldo ke teman?</b><br>A: Buka menu Pertemanan, tambahkan teman. Jika sudah berteman, buka menu "Minta Saldo", masukkan username teman dan nominalnya. Teman Anda akan melihat konfirmasi di riwayat/pending transaksi.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL ABOUT -->
+  <div id="modal-about" class="modal-overlay hidden">
+    <div class="modal-content">
+      <button class="modal-close btn-close-modal" data-modal="modal-about">✕</button>
+      <h3 class="modal-title">ℹ️ Tentang Aplikasi</h3>
+      <div style="font-size: 12px; color: #cbd5e1; line-height: 1.5; margin-top: 10px;">
+        <p><b>Tabungan Rakyat v3.0</b> - Fitur Sosial Warga, Minta Saldo, & Chatting Terintegrasi.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDK v8 CDN -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script src="Script.js"></script>
+</body>
+</html>

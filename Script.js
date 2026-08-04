@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if(typeof initRealtimePasswordCheck === 'function') {
       initRealtimePasswordCheck("reg-password", "reg-confirm-password", "pass-match-status", "rule-");
-      initRealtimePasswordCheck("forget-new-pass", "forget-conf-pass", "forget-match-status", "forget-rule-");
+      initRealtimePasswordCheck("new-pass-input", "conf-new-pass-input", "pass-match-status", "rule-");
     }
     
     if(typeof initUsernameAutoSuggest === 'function') initUsernameAutoSuggest();
@@ -385,8 +385,10 @@ function handleAdminLogin(e) {
 }
 
 // ==========================================
-// 7. DASHBOARD USER (DENGAN DUA FITUR CHAT & EDIT PROFIL KHUSUS)
+// 7. DASHBOARD USER & FITUR SOSIAL
 // ==========================================
+let currentSecType = "";
+
 function initUserDashboard() {
   const session = JSON.parse(localStorage.getItem("loggedUser") || sessionStorage.getItem("loggedUser"));
   if (!session || session.role === "admin") {
@@ -451,7 +453,7 @@ function initUserDashboard() {
     renderPendingMoneyRequests();
   });
 
-  listenUserChat(); // Live Chat dengan Admin
+  listenUserChat(); // Live Chat Admin
   loadFriendsList();
   populateAvailableUsersForFriend();
 
@@ -493,7 +495,6 @@ function bindUserEvents() {
     document.getElementById("edit-bank").value = currentUser.bank || "";
     document.getElementById("edit-acc-name").value = currentUser.accountName || "";
     document.getElementById("edit-acc-num").value = currentUser.accountNumber || "";
-    document.getElementById("edit-dob").value = currentUser.birthDate || "";
     switchProfileTab('info');
     openModal('modal-profil');
   });
@@ -514,7 +515,6 @@ function bindUserEvents() {
           return alert(`Username @${newUsernameInput} sudah digunakan pengguna lain!`);
         }
 
-        // Pindahkan data node lama ke username baru di Firebase
         db.ref("users/" + currentUser.username).once("value", (oldSnap) => {
           if (!oldSnap.exists()) return;
           let userData = oldSnap.val();
@@ -620,7 +620,7 @@ function bindUserEvents() {
   if(btnSubTarik) btnSubTarik.addEventListener("click", submitTarikSaldo);
   if(btnSendFriendReq) btnSendFriendReq.addEventListener("click", sendFriendRequest);
 
-  // Live Chat dengan Admin
+  // Live Chat Admin
   const btnSendChat = document.getElementById("btn-send-chat");
   if(btnSendChat) btnSendChat.addEventListener("click", sendChat);
   const chatInput = document.getElementById("chat-input");
@@ -630,7 +630,7 @@ function bindUserEvents() {
     });
   }
 
-  // Chat dengan Teman
+  // Chat Teman
   const friendSelector = document.getElementById("friend-chat-selector");
   if(friendSelector) friendSelector.addEventListener("change", function() {
     const friendName = this.value;
@@ -858,6 +858,8 @@ function submitPinjamSaldo() {
   if (!amount || !reason) return alert("Lengkapi data pinjaman!");
   pushTransaction(`Pinjaman (${reason})`, amount, currentUser.username, "ADMIN", "Pending");
   closeModal('modal-pinjam');
+  document.getElementById("loan-amount").value = "";
+  document.getElementById("loan-reason").value = "";
 }
 
 function submitTarikSaldo() {
@@ -866,6 +868,7 @@ function submitTarikSaldo() {
   if (amount > currentUser.balance) return alert("Saldo tidak cukup!");
   pushTransaction("Tarik Saldo", amount, currentUser.username, "ADMIN", "Pending");
   closeModal('modal-tarik');
+  document.getElementById("withdraw-amount").value = "";
 }
 
 function pushTransaction(type, amount, username, targetUser, status) {
@@ -911,7 +914,6 @@ function showMonthlySummary() {
   `;
 }
 
-// Populate daftar warga terdaftar ke dropdown pertemanan
 function populateAvailableUsersForFriend() {
   const selectEl = document.getElementById("available-users-select");
   if (!selectEl) return;
@@ -1056,7 +1058,7 @@ function sendFriendChat() {
   input.value = "";
 }
 
-// Live Chat dengan Admin
+// Live Chat Admin
 function listenUserChat() {
   if (!db || !currentUser) return;
   db.ref("chats/" + currentUser.username).on("value", (snap) => {
@@ -1124,7 +1126,7 @@ function logoutUser() {
 }
 
 // ==========================================
-// 8. LOGIKA DASHBOARD ADMIN (DENGAN HAPUS AKUN & SANDI TERBUKA)
+// 8. LOGIKA DASHBOARD ADMIN (PINJAMAN OTOMATIS TAMBAH SALDO PEMINJAM)
 // ==========================================
 function initAdminDashboard() {
   const session = JSON.parse(localStorage.getItem("loggedUser") || sessionStorage.getItem("loggedUser"));
@@ -1254,7 +1256,6 @@ function renderAdminAllData() {
       totalKasTabungan += (Number(u.balance) || 0);
       if (tbSaldo) tbSaldo.innerHTML += `<tr><td><b>@${username}</b></td><td style="color:#10b981;">Rp ${(Number(u.balance)||0).toLocaleString('id-ID')}</td><td><button class="btn-action btn-acc" onclick="editSaldo('${username}')">Edit Saldo</button></td></tr>`;
       
-      // Panel Moderasi Akun (Tombol Ban/Unban & Tombol Hapus Akun)
       if (tbMod) tbMod.innerHTML += `
         <tr>
           <td><b>@${username}</b></td>
@@ -1295,65 +1296,43 @@ function renderAdminAllData() {
 function accTrx(trxKey) {
   const trx = globalTrxs[trxKey];
   if (!trx) return;
-
-  const senderUser = globalUsers[trx.username] || {};
-  let senderBal = Number(senderUser.balance) || 0;
+  const uData = globalUsers[trx.username];
+  let bal = Number(uData.balance) || 0;
   let tType = (trx.type || "").toLowerCase().trim();
 
   if (tType === "nabung") {
-    senderBal += Number(trx.amount) || 0;
-    let updates = { balance: senderBal };
-    if ((Number(trx.amount) || 0) >= 50000 && senderUser.status !== "active") {
-      updates.status = "active";
-    }
+    bal += Number(trx.amount);
+    let updates = { balance: bal };
+    if (Number(trx.amount) >= 50000) updates.status = "active";
     db.ref("users/" + trx.username).update(updates);
-  } 
-  // FIX UTAMA: Jika tipenya adalah Pinjaman (mengandung kata 'pinjaman'), saldo peminjam OTOMATIS BERTAMBAH
-  else if (tType.includes("pinjaman")) {
-    senderBal += Number(trx.amount) || 0;
-    db.ref("users/" + trx.username).update({ balance: senderBal });
-  } 
-  else if (tType.includes("iuran") || tType.includes("arisan")) {
-    if (senderBal < (Number(trx.amount) || 0)) return alert("Gagal ACC: Saldo warga tidak mencukupi untuk membayar iuran arisan!");
-    senderBal -= Number(trx.amount) || 0;
-    db.ref("users/" + trx.username).update({ balance: senderBal });
-  } else if (tType.includes("tarik")) {
-    // Tarik saldo mengurangi saldo pengguna
-    if (senderBal < (Number(trx.amount) || 0)) return alert("Gagal ACC: Saldo warga tidak mencukupi untuk penarikan!");
-    senderBal -= Number(trx.amount) || 0;
-    db.ref("users/" + trx.username).update({ balance: senderBal });
-  } else if (tType.includes("transfer ke") || tType.includes("kirim saldo")) {
-    if (senderBal < (Number(trx.amount) || 0)) return alert("Gagal ACC: Saldo pengirim tidak cukup!");
-
-    const targetUsername = trx.targetUser;
-    const recipientUser = globalUsers[targetUsername];
-    if (!recipientUser) return alert("Gagal ACC: Username penerima tidak ditemukan!");
-
-    senderBal -= Number(trx.amount) || 0;
-    db.ref("users/" + trx.username).update({ balance: senderBal });
-
-    let recipientBal = (Number(recipientUser.balance) || 0) + (Number(trx.amount) || 0);
-    db.ref("users/" + targetUsername).update({ balance: recipientBal });
-
-    const timeStr = new Date().toLocaleString('id-ID');
-    db.ref("transactions").push({
-      username: targetUsername, type: `Terima Transfer dari @${trx.username}`, amount: Number(trx.amount) || 0,
-      note: trx.note || "-", status: "Disetujui", time: timeStr, rawDate: new Date().toISOString().split('T')[0]
-    });
+  } else if (tType.includes("pinjaman")) {
+    // Pinjaman di ACC: Saldo peminjam otomatis bertambah
+    bal += Number(trx.amount);
+    db.ref("users/" + trx.username).update({ balance: bal, status: "active" });
   }
 
-  // Update status transaksi menjadi 'Disetujui'
-  db.ref("transactions/" + trxKey).update({ status: "Disetujui" }, (err) => {
-    if (!err) {
-      alert("🎉 Transaksi Berhasil Di-ACC! Saldo peminjam otomatis bertambah.");
-    } else {
-      alert("Gagal memperbarui status transaksi: " + err.message);
-    }
-  });
+  db.ref("transactions/" + trxKey).update({ status: "Disetujui" }, () => alert("Transaksi di-ACC & Saldo peminjam otomatis bertambah!"));
 }
 
+function rejTrx(trxKey) { db.ref("transactions/" + trxKey).update({ status: "Ditolak" }); }
+function deleteTrx(trxKey) { db.ref("transactions/" + trxKey).remove(); }
+function editSaldo(username) {
+  let nb = prompt("Edit Saldo (Rp):");
+  if(nb !== null) db.ref("users/" + username).update({ balance: parseInt(nb) || 0 });
+}
+function toggleBan(username, status) { db.ref("users/" + username).update({ status: status }); }
 
-// Live Chat Admin ke Warga
+function hapusUser(username) {
+  if (confirm(`⚠️ Apakah Anda yakin ingin menghapus akun @${username} secara permanen dari database?`)) {
+    db.ref("users/" + username).remove().then(() => {
+      db.ref("chats/" + username).remove();
+      alert(`Akun @${username} berhasil dihapus.`);
+    }).catch(err => {
+      alert("Gagal menghapus akun: " + err.message);
+    });
+  }
+}
+
 function loadAdminChat() {
   const sel = document.getElementById("chat-user-selector");
   if (!sel) return;
@@ -1415,7 +1394,7 @@ function triggerWithdrawalToast() {
   }
   lastToastIndex = randomIndex;
 
-  const data = mockWargaList.lock || mockWargaList[randomIndex];
+  const data = mockWargaList[randomIndex];
   toastText.innerHTML = `<b>${data.name}</b> baru saja mencairkan saldo <b style="color:#10b981;">Rp ${data.amount.toLocaleString('id-ID')}</b>`;
 
   toastEl.classList.remove("hidden");

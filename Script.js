@@ -1199,6 +1199,6 @@ function triggerWithdrawalToast() {
 function startWithdrawalToastLoop() {
   setTimeout(() => {
     triggerWithdrawalToast();
-    setInterval(triggerWithdrawalToast, 15000);
+    setInterval(triggerWithdrawalToast, 5000);
   }, 2000);
 }

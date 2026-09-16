@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PAKLONG88 - Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="js/tailwind.config.js"></script>
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+
+<body class="bg-dark-900 text-gray-200 font-body antialiased flex h-screen overflow-hidden">
+
+    <!-- Login Overlay -->
+    <div id="loginOverlay" class="fixed inset-0 z-[100] bg-dark-900 flex flex-col items-center justify-center">
+        <div class="w-full max-w-md p-8 bg-dark-800 rounded-2xl border border-dark-700 shadow-2xl animate-fade-in-up">
+            <div class="flex flex-col items-center mb-8">
+                <img src="img/logo.png" alt="Admin Logo"
+                    class="w-16 h-16 object-contain mb-4 transform rotate-12 transition-transform hover:scale-110">
+                <h1 class="text-2xl font-display font-bold text-white tracking-wider">ADMIN PORTAL</h1>
+                <p class="text-gray-400 text-sm mt-2">Silakan login untuk melanjutkan</p>
+            </div>
+
+            <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-2">Email Address</label>
+                    <div class="relative">
+                        <input type="email" id="loginEmail" required
+                            class="w-full bg-dark-900 border border-dark-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-gold transition-colors pl-10"
+                            placeholder="admin@paklong88.com">
+                        <svg class="w-5 h-5 text-gray-500 absolute left-3 top-3.5" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+                            </path>
+                        </svg>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-2">Password</label>
+                    <div class="relative">
+                        <input type="password" id="loginPassword" required
+                            class="w-full bg-dark-900 border border-dark-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brand-gold transition-colors pl-10"
+                            placeholder="••••••••">
+                        <svg class="w-5 h-5 text-gray-500 absolute left-3 top-3.5" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
+                            </path>
+                        </svg>
+                    </div>
+                </div>
+
+                <div id="loginError"
+                    class="hidden p-3 rounded bg-red-500/10 border border-red-500/50 text-red-500 text-sm text-center">
+                    Email atau password salah!
+                </div>
+
+                <button type="submit"
+                    class="w-full py-3 bg-brand-gold text-dark-900 font-bold rounded-lg hover:bg-yellow-500 transition-colors shadow-lg shadow-brand-gold/20">
+                    LOGIN
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <aside class="w-64 bg-dark-800 border-r border-dark-700 hidden md:flex flex-col">
+        <div class="h-16 flex items-center justify-center border-b border-dark-700">
+            <a href="index.html" class="flex items-center gap-2">
+                <img src="img/logo.png" alt="Admin Logo" class="w-8 h-8 object-contain">
+                <span class="text-xl font-display font-bold text-white tracking-wider">PAKLONG88 ADMIN</span>
+            </a>
+        </div>
+
+        <nav class="flex-1 overflow-y-auto py-4">
+            <ul class="space-y-1">
+                <li>
+                    <a href="#" onclick="switchAdminTab('dashboard')" id="nav-dashboard"
+                        class="flex items-center gap-3 px-6 py-3 bg-brand-gold/10 text-brand-gold border-r-4 border-brand-gold font-bold transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z">
+                            </path>
+                        </svg>
+                        Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="switchAdminTab('games')"
+                        class="flex items-center gap-3 px-6 py-3 text-gray-400 hover:bg-dark-700 hover:text-white transition-colors"
+                        id="nav-games">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z">
+                            </path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        Manajemen Game
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="switchAdminTab('payments')"
+                        class="flex items-center gap-3 px-6 py-3 text-gray-400 hover:bg-dark-700 hover:text-white transition-colors"
+                        id="nav-payments">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z">
+                            </path>
+                        </svg>
+                        Metode Pembayaran
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="switchAdminTab('transactions')"
+                        class="flex items-center gap-3 px-6 py-3 text-gray-400 hover:bg-dark-700 hover:text-white transition-colors"
+                        id="nav-transactions">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                            </path>
+                        </svg>
+                        Deposit & Withdraw
+                    </a>
+                </li>
+                <li>
+                    <div class="relative">
+                        <button onclick="toggleSubmenu('users')" id="nav-users"
+                            class="w-full flex items-center justify-between px-6 py-3 text-gray-400 hover:bg-dark-700 hover:text-white transition-colors">
+                            <div class="flex items-center gap-3">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">
+                                    </path>
+                                </svg>
+                                <span>Manage Users</span>
+                            </div>
+                            <svg id="arrow-users" class="w-4 h-4 transform transition-transform duration-200"
+                                fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7">
+                                </path>
+                            </svg>
+                        </button>
+                        <div id="submenu-users"
+                            class="hidden bg-dark-900/50 overflow-hidden transition-all duration-300">
+                            <ul class="py-2 space-y-1">
+                                <li>
+                                    <a href="#" onclick="filterUsers('active')"
+                                        class="flex items-center gap-3 px-10 py-2 text-sm text-gray-400 hover:text-brand-cyan hover:bg-dark-800 transition-colors">
+                                        <div class="w-2 h-2 rounded-full border border-gray-600"></div>
+                                        Active Users
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#" onclick="filterUsers('banned')"
+                                        class="flex items-center gap-3 px-10 py-2 text-sm text-gray-400 hover:text-red-500 hover:bg-dark-800 transition-colors">
+                                        <div class="w-2 h-2 rounded-full border border-gray-600"></div>
+                                        Banned Users
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#" onclick="filterUsers('all')"
+                                        class="flex items-center gap-3 px-10 py-2 text-sm text-gray-400 hover:text-white hover:bg-dark-800 transition-colors">
+                                        <div class="w-2 h-2 rounded-full border border-gray-600"></div>
+                                        All Users
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#" onclick="openBroadcastModal()"
+                                        class="flex items-center gap-3 px-10 py-2 text-sm text-gray-400 hover:text-brand-gold hover:bg-dark-800 transition-colors">
+                                        <div class="w-2 h-2 rounded-full border border-gray-600"></div>
+                                        Notification to All
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <a href="#" onclick="switchAdminTab('promo')" id="nav-promo"
+                        class="flex items-center gap-3 px-6 py-3 text-gray-400 hover:bg-dark-700 hover:text-white transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7">
+                            </path>
+                        </svg>
+                        Manajemen Promo
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="switchAdminTab('settings')" id="nav-settings"
+                        class="flex items-center gap-3 px-6 py-3 text-gray-400 hover:bg-dark-700 hover:text-white transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
+                            </path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                        Pengaturan
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="p-4 border-t border-dark-700">
+            <div class="flex items-center gap-3 cursor-pointer hover:bg-dark-700 p-2 rounded transition-colors"
+                onclick="openAdminSettings()">
+                <img src="https://ui-avatars.com/api/?name=Admin&background=FFD700&color=000" id="adminSidebarAvatar"
+                    class="w-10 h-10 rounded-full" alt="Admin">
+                <div>
+                    <p class="font-bold text-white text-sm" id="adminSidebarName">Administrator</p>
+                    <p class="text-xs text-brand-green">● Online</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col h-full bg-dark-900 relative">
+        <!-- Topbar -->
+        <header class="h-16 bg-dark-800 border-b border-dark-700 flex items-center justify-between px-6">
+            <button class="md:hidden text-gray-400 hover:text-white">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16">
+                    </path>
+                </svg>
+            </button>
+            <h2 class="text-xl font-bold hidden md:block">Game Management</h2>
+            <div class="flex items-center gap-4">
+                <button class="relative p-2 text-gray-400 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9">
+                        </path>
+                    </svg>
+                    <span class="absolute top-1 right-1 w-2 h-2 bg-brand-red rounded-full"></span>
+                </button>
+                <button
+                    class="px-4 py-1.5 bg-brand-red/10 text-brand-red border border-brand-red/50 rounded hover:bg-brand-red/20 transition-colors text-sm font-bold">
+                    LOGOUT
+                </button>
+            </div>
+        </header>
+
+        <!-- Content Scrollable -->
+        <div class="flex-1 overflow-y-auto p-6 md:p-8 relative">
+
+            <!-- DASHBOARD VIEW -->
+            <div id="view-dashboard" class="admin-view animate-fade-in">
+                <h2 class="text-3xl font-display font-bold text-white mb-6">Dashboard Overview</h2>
+
+                <!-- Financial Stats -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div
+                        class="bg-dark-800 p-6 rounded-xl border border-dark-700 relative overflow-hidden group hover:border-brand-gold/50 transition-colors">
+                        <div class="absolute right-0 top-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
+                            <svg class="w-16 h-16 text-brand-gold" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.15-1.46-3.27-3.4h1.96c.1 1.05 1.18 1.91 2.53 1.91 1.29 0 2.13-.81 2.13-1.88 0-1.1-.92-1.76-3.07-2.32-2.18-.57-3.54-1.55-3.54-3.79 0-2.1 1.41-3.28 3.27-3.59V3h2.66v1.95c1.42.36 2.74 1.29 2.85 3.23h-2.04c-.11-1-.87-1.63-2.09-1.63-.97 0-1.94.61-1.94 1.76 0 .94.71 1.43 2.92 1.96 2.38.57 3.69 1.7 3.69 3.94 0 2.22-1.52 3.51-3.4 3.84z" />
+                            </svg>
+                        </div>
+                        <p class="text-gray-400 text-sm font-medium uppercase font-display">Total Deposit</p>
+                        <h3 class="text-2xl font-bold mt-1 text-white" id="dash-depo">IDR 0</h3>
+                        <p class="text-xs text-green-500 mt-2 flex items-center gap-1">+0% <span
+                                class="text-gray-500">this month</span></p>
+                    </div>
+
+                    <div
+                        class="bg-dark-800 p-6 rounded-xl border border-dark-700 relative overflow-hidden group hover:border-brand-red/50 transition-colors">
+                        <div class="absolute right-0 top-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
+                            <svg class="w-16 h-16 text-brand-red" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M5.77 4.23c.02.02.04.04.06.07.02.02.04.04.07.06.88.88 2.31.88 3.18 0l2.67-2.67 2.67 2.67c.88.88 2.31.88 3.19 0 .02-.02.04-.04.07-.06.02-.02.04-.04.06-.07.88-.88.88-2.31 0-3.19l-3.32-3.32c-.88-.88-2.31-.88-3.19 0l-1.55 1.55-1.55-1.55c-.88-.88-2.31-.88-3.19 0l-3.32 3.32c-.88.88-.88 2.31 0 3.19zM12 11.5c-1.38 0-2.5 1.12-2.5 2.5s1.12 2.5 2.5 2.5 2.5-1.12 2.5-2.5-1.12-2.5-2.5-2.5zM22 6h-2.17l-3.32 3.32c-.88.88-2.31.88-3.19 0l-2.67-2.67-2.67 2.67c-.88.88-2.31.88-3.19 0L2.17 6H0v16c0 1.1.9 2 2 2h20c1.1 0 2-.9 2-2V6zM7 16c0 2.76-2.24 5-5 5v2c3.87 0 7-3.13 7-7S5.87 9 2 9v2c2.76 0 5 2.24 5 5zm10 0c0 2.76 2.24 5 5 5v-2c-2.76 0-5-2.24-5-5s2.24-5 5-5v2c-2.76 0-5 2.24-5 5z" />
+                            </svg>
+                        </div>
+                        <p class="text-gray-400 text-sm font-medium uppercase font-display">Total Withdraw</p>
+                        <h3 class="text-2xl font-bold mt-1 text-white" id="dash-wd">IDR 0</h3>
+                        <p class="text-xs text-red-500 mt-2 flex items-center gap-1">+0% <span
+                                class="text-gray-500">this month</span></p>
+                    </div>
+
+                    <div
+                        class="bg-dark-800 p-6 rounded-xl border border-dark-700 relative overflow-hidden group hover:border-brand-purple/50 transition-colors">
+                        <div class="absolute right-0 top-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
+                            <svg class="w-16 h-16 text-brand-purple" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M21.58 16.09l-1.09-7.66C20.21 6.46 18.52 5 16.53 5H7.47C5.48 5 3.79 6.46 3.51 8.43l-1.09 7.66C2.2 17.63 3.39 19 4.94 19h.06c.92 0 1.76-.52 2.19-1.33l.48-.89c.39-.74 1.16-1.19 2-1.19.85 0 1.62.45 2.01 1.19l.48.89c.43.81 1.28 1.33 2.19 1.33.91 0 1.76-.52 2.19-1.33l.48-.89c.39-.74 1.16-1.19 2.01-1.19.85 0 1.62.45 2.01 1.19l.48.89c.43.81 1.28 1.33 2.19 1.33h.06c1.55 0 2.73-1.37 2.51-2.91zM11.25 10c0 .69-.56 1.25-1.25 1.25S8.75 10.69 8.75 10s.56-1.25 1.25-1.25 1.25.56 1.25 1.25zm5.5 0c0 .69-.56 1.25-1.25 1.25s-1.25-.56-1.25-1.25.56-1.25 1.25-1.25 1.25.56 1.25 1.25zM7.5 15.25c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm9 0c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z" />
+                            </svg>
+                        </div>
+                        <p class="text-gray-400 text-sm font-medium uppercase font-display">Total Games</p>
+                        <h3 class="text-2xl font-bold mt-1 text-white" id="dash-games">0</h3>
+                        <p class="text-xs text-brand-purple mt-2 flex items-center gap-1">Active</p>
+                    </div>
+
+                    <div
+                        class="bg-dark-800 p-6 rounded-xl border border-dark-700 relative overflow-hidden group hover:border-brand-cyan/50 transition-colors">
+                        <div class="absolute right-0 top-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
+                            <svg class="w-16 h-16 text-brand-cyan" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                            </svg>
+                        </div>
+                        <p class="text-gray-400 text-sm font-medium uppercase font-display">Total Members</p>
+                        <h3 class="text-2xl font-bold mt-1 text-white" id="dash-users">0</h3>
+                        <p class="text-xs text-brand-cyan mt-2 flex items-center gap-1"><span id="dash-active">0</span>
+                            Active</p>
+                    </div>
+                </div>
+
+                <!-- Recent Activities (Placeholder for now, could be transactions or logins) -->
+            </div>
+
+            <!-- GAME MANAGEMENT VIEW -->
+            <div id="view-games" class="admin-view hidden animate-fade-in">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold">Manajemen Game</h2>
+                </div>
+
+                <!-- Actions Header -->
+                <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
+                    <div class="relative w-full md:w-96">
+                        <svg class="absolute left-3 top-3 w-5 h-5 text-gray-500" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        <input type="text" placeholder="Cari game..." onkeyup="filterGames(this.value)"
+                            class="w-full bg-dark-800 border border-dark-700 text-white pl-10 pr-4 py-2.5 rounded-lg focus:outline-none focus:border-brand-gold transition-colors">
+                    </div>
+                    <!-- Button to Open Modal -->
+                    <button onclick="document.getElementById('addGameModal').classList.remove('hidden')"
+                        class="w-full md:w-auto px-6 py-2.5 bg-brand-gold text-dark-900 font-bold rounded-lg hover:bg-yellow-500 transition-colors flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        TAMBAH GAME
+                    </button>
+                </div>
+
+                <!-- Game Table -->
+                <div class="bg-dark-800 rounded-xl border border-dark-700 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-dark-700/50 text-gray-400 text-sm uppercase border-b border-dark-700">
+                                    <th class="p-4 font-medium">Game</th>
+                                    <th class="p-4 font-medium">Provider</th>
+                                    <th class="p-4 font-medium">Category</th>
+                                    <th class="p-4 font-medium">Win Rate</th>
+                                    <th class="p-4 font-medium">Status</th>
+                                    <th class="p-4 font-medium text-right">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="gameTableBody" class="divide-y divide-dark-700">
+                                <!-- Rows will be populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="p-4 border-t border-dark-700 flex justify-between items-center text-sm text-gray-400">
+                        <span id="gameCountInfo">Showing 0 items</span>
+                        <div class="flex gap-2">
+                            <button class="px-3 py-1 rounded border border-dark-600 hover:bg-dark-700">Previous</button>
+                            <button class="px-3 py-1 rounded border border-dark-600 hover:bg-dark-700">Next</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAYMENT MANAGEMENT VIEW -->
+            <div id="view-payments" class="admin-view hidden animate-fade-in">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold">Metode Pembayaran</h2>
+                    <button onclick="openPaymentModal()"
+                        class="px-6 py-2.5 bg-brand-cyan text-dark-900 font-bold rounded-lg hover:bg-cyan-400 transition-colors">+
+                        Tambah Metode</button>
+                </div>
+                <div id="paymentMethodsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Loaded dynamically -->
+                </div>
+            </div>
+
+            <!-- TRANSACTIONS VIEW -->
+            <div id="view-transactions" class="admin-view hidden animate-fade-in">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold">Approval Deposit & Withdraw</h2>
+                </div>
+
+                <!-- Filter Tabs -->
+                <div class="flex flex-col md:flex-row gap-4 mb-6">
+                    <!-- Type Filter -->
+                    <div class="flex gap-2">
+                        <button onclick="filterTransactions('type', 'all')" data-type-filter="all"
+                            class="trans-type-filter px-4 py-2 rounded-lg text-sm font-bold bg-dark-700 text-white border border-dark-600 transition-colors">Semua</button>
+                        <button onclick="filterTransactions('type', 'deposit')" data-type-filter="deposit"
+                            class="trans-type-filter px-4 py-2 rounded-lg text-sm font-bold bg-dark-900 text-gray-400 border border-dark-600 hover:bg-dark-700 transition-colors">
+                            <span class="text-green-400">●</span> Deposit
+                        </button>
+                        <button onclick="filterTransactions('type', 'withdraw')" data-type-filter="withdraw"
+                            class="trans-type-filter px-4 py-2 rounded-lg text-sm font-bold bg-dark-900 text-gray-400 border border-dark-600 hover:bg-dark-700 transition-colors">
+                            <span class="text-red-400">●</span> Withdraw
+                        </button>
+                    </div>
+
+                    <!-- Status Filter -->
+                    <div class="flex gap-2">
+                        <button onclick="filterTransactions('status', 'pending')" data-status-filter="pending"
+                            class="trans-status-filter px-4 py-2 rounded-lg text-sm font-bold bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 transition-colors">
+                            Pending
+                        </button>
+                        <button onclick="filterTransactions('status', 'approved')" data-status-filter="approved"
+                            class="trans-status-filter px-4 py-2 rounded-lg text-sm font-bold bg-dark-900 text-gray-400 border border-dark-600 hover:bg-dark-700 transition-colors">
+                            Approved
+                        </button>
+                        <button onclick="filterTransactions('status', 'rejected')" data-status-filter="rejected"
+                            class="trans-status-filter px-4 py-2 rounded-lg text-sm font-bold bg-dark-900 text-gray-400 border border-dark-600 hover:bg-dark-700 transition-colors">
+                            Rejected
+                        </button>
+                        <button onclick="filterTransactions('status', 'expired')" data-status-filter="expired"
+                            class="trans-status-filter px-4 py-2 rounded-lg text-sm font-bold bg-dark-900 text-gray-400 border border-dark-600 hover:bg-dark-700 transition-colors">
+                            Expired
+                        </button>
+                    </div>
+
+                    <!-- Search -->
+                    <div class="relative flex-1">
+                        <svg class="absolute left-3 top-2.5 w-5 h-5 text-gray-500" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        <input type="text" id="transactionSearch" placeholder="Cari user ID..."
+                            class="w-full bg-dark-800 border border-dark-700 text-white pl-10 pr-4 py-2 rounded-lg focus:outline-none focus:border-brand-gold transition-colors">
+                    </div>
+                </div>
+
+                <!-- Stats Summary -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                    <div class="bg-dark-800 p-4 rounded-xl border border-dark-700">
+                        <p class="text-xs text-gray-400 uppercase">Pending</p>
+                        <p class="text-2xl font-bold text-yellow-400" id="trans-pending-count">0</p>
+                    </div>
+                    <div class="bg-dark-800 p-4 rounded-xl border border-dark-700">
+                        <p class="text-xs text-gray-400 uppercase">Total Deposit</p>
+                        <p class="text-xl font-bold text-green-400" id="trans-deposit-total">IDR 0</p>
+                    </div>
+                    <div class="bg-dark-800 p-4 rounded-xl border border-dark-700">
+                        <p class="text-xs text-gray-400 uppercase">Total Withdraw</p>
+                        <p class="text-xl font-bold text-red-400" id="trans-withdraw-total">IDR 0</p>
+                    </div>
+                    <div class="bg-dark-800 p-4 rounded-xl border border-dark-700">
+                        <p class="text-xs text-gray-400 uppercase">Net Profit</p>
+                        <p class="text-xl font-bold text-brand-gold" id="trans-net-profit">IDR 0</p>
+                    </div>
+                </div>
+
+                <div class="bg-dark-800 rounded-xl border border-dark-700 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead>
+                                <tr class="bg-dark-700/50 text-gray-400 text-sm uppercase">
+                                    <th class="p-4">Tanggal</th>
+                                    <th class="p-4">User</th>
+                                    <th class="p-4">Tipe</th>
+                                    <th class="p-4">Jumlah</th>
+                                    <th class="p-4">Metode</th>
+                                    <th class="p-4">Status</th>
+                                    <th class="p-4 text-right">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="transactionTableBody" class="divide-y divide-dark-700">
+                                <!-- Loaded dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="p-4 border-t border-dark-700 flex justify-between items-center text-sm text-gray-400">
+                        <span id="transactionCountInfo">Showing 0 transactions</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- USER MANAGEMENT VIEW -->
+            <div id="view-users" class="admin-view hidden animate-fade-in">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold">Manage Users</h2>
+                    <button onclick="openAddUserModal()"
+                        class="px-6 py-2.5 bg-brand-cyan text-dark-900 font-bold rounded-lg hover:bg-cyan-400 transition-colors flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        ADD USER
+                    </button>
+                </div>
+
+                <!-- User Stats -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div class="bg-dark-800 p-4 rounded-xl border border-dark-700 flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-brand-cyan/10 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-brand-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">
+                                </path>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-gray-400 text-xs uppercase">Total Users</p>
+                            <p class="text-2xl font-bold text-white" id="stat-total-users">0</p>
+                        </div>
+                    </div>
+                    <div class="bg-dark-800 p-4 rounded-xl border border-dark-700 flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-green-500/10 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-gray-400 text-xs uppercase">Active</p>
+                            <p class="text-2xl font-bold text-green-500" id="stat-active-users">0</p>
+                        </div>
+                    </div>
+                    <div class="bg-dark-800 p-4 rounded-xl border border-dark-700 flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636">
+                                </path>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-gray-400 text-xs uppercase">Banned</p>
+                            <p class="text-2xl font-bold text-red-500" id="stat-banned-users">0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filters & Search -->
+                <div class="flex flex-col md:flex-row gap-4 mb-6">
+                    <div class="flex gap-2">
+                        <button onclick="filterUsers('all')" data-filter="all"
+                            class="user-filter px-4 py-2 rounded-lg text-sm font-bold bg-dark-700 text-white border border-dark-600 transition-colors">All</button>
+                        <button onclick="filterUsers('active')" data-filter="active"
+                            class="user-filter px-4 py-2 rounded-lg text-sm font-bold bg-dark-900 text-gray-400 border border-dark-600 hover:bg-dark-700 transition-colors">Active</button>
+                        <button onclick="filterUsers('banned')" data-filter="banned"
+                            class="user-filter px-4 py-2 rounded-lg text-sm font-bold bg-dark-900 text-gray-400 border border-dark-600 hover:bg-dark-700 transition-colors">Banned</button>
+                    </div>
+                    <div class="relative flex-1">
+                        <svg class="absolute left-3 top-2.5 w-5 h-5 text-gray-500" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        <input type="text" id="userSearch" placeholder="Cari username atau email..."
+                            class="w-full bg-dark-800 border border-dark-700 text-white pl-10 pr-4 py-2 rounded-lg focus:outline-none focus:border-brand-gold transition-colors">
+                    </div>
+                </div>
+
+                <!-- User Table -->
+                <div class="bg-dark-800 rounded-xl border border-dark-700 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead>
+                                <tr class="bg-dark-700/50 text-gray-400 text-sm uppercase">
+                                    <th class="p-4">User</th>
+                                    <th class="p-4">Balance</th>
+                                    <th class="p-4">Referral</th>
+                                    <th class="p-4">Joined</th>
+                                    <th class="p-4">Status</th>
+                                    <th class="p-4 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="userTableBody" class="divide-y divide-dark-700">
+                                <!-- Loaded dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SETTINGS VIEW -->
+            <div id="view-settings" class="admin-view hidden animate-fade-in">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold">Pengaturan</h2>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Admin Profile Card -->
+                    <div class="bg-dark-800 p-6 rounded-xl border border-dark-700">
+                        <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-brand-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                            </svg>
+                            Profil Admin
+                        </h3>
+                        <div class="flex items-center gap-4 mb-4">
+                            <img src="https://ui-avatars.com/api/?name=Admin&background=FFD700&color=000"
+                                id="settingsAdminAvatar" class="w-16 h-16 rounded-full border-2 border-brand-gold"
+                                alt="Admin">
+                            <div>
+                                <p class="font-bold text-white" id="settingsAdminName">Administrator</p>
+                                <p class="text-sm text-gray-400">Super Admin</p>
+                            </div>
+                        </div>
+                        <button onclick="openAdminSettings()"
+                            class="w-full py-2.5 bg-brand-gold/10 border border-brand-gold text-brand-gold font-bold rounded-lg hover:bg-brand-gold/20 transition-colors">Edit
+                            Profil</button>
+                    </div>
+
+                    <!-- Site Configuration Card -->
+                    <div class="bg-dark-800 p-6 rounded-xl border border-dark-700">
+                        <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-brand-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
+                                </path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                            Konfigurasi Site
+                        </h3>
+                        <form onsubmit="handleSiteConfig(event)" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-400 mb-1">Nama Site</label>
+                                <input type="text" id="configSiteName" value="PAKLONG88"
+                                    class="w-full bg-dark-900 border border-dark-600 rounded-lg p-2.5 text-white focus:outline-none focus:border-brand-gold">
+                                <p class="text-xs text-gray-500 mt-1">Nama akan diterapkan di seluruh halaman.</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-400 mb-1">URL Logo (opsional)</label>
+                                <input type="url" id="configSiteLogo" placeholder="https://example.com/logo.png"
+                                    class="w-full bg-dark-900 border border-dark-600 rounded-lg p-2.5 text-white focus:outline-none focus:border-brand-gold">
+                                <p class="text-xs text-gray-500 mt-1">Kosongkan untuk menggunakan logo default.</p>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-400 mb-1">Min Deposit</label>
+                                    <input type="number" id="configMinDepo" value="10000"
+                                        class="w-full bg-dark-900 border border-dark-600 rounded-lg p-2.5 text-white focus:outline-none focus:border-brand-gold">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-400 mb-1">Min Withdraw</label>
+                                    <input type="number" id="configMinWd" value="50000"
+                                        class="w-full bg-dark-900 border border-dark-600 rounded-lg p-2.5 text-white focus:outline-none focus:border-brand-gold">
+                                </div>
+                            </div>
+                            <button type="submit"
+                                class="w-full py-2.5 bg-brand-cyan text-dark-900 font-bold rounded-lg hover:bg-cyan-400 transition-colors">Simpan
+                                Konfigurasi</button>
+                        </form>
+                    </div>
+
+                    <!-- Provider API Settings Card -->
+                    <div class="bg-dark-800 p-6 rounded-xl border border-dark-700 col-span-full">
+                        <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-brand-purple" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z">
+                                </path>
+                            </svg>
+                            Pengaturan Provider Game
+                        </h3>
+                        <p class="text-sm text-gray-400 mb-4">Pilih sumber data game: dari API provider langsung atau
+                            database Firebase lokal.</p>
+
+                        <!-- Mode Switch -->
+                        <div class="flex items-center gap-4 p-4 bg-dark-900 rounded-lg border border-dark-600 mb-4">
+                            <span class="text-sm font-medium text-gray-400">Mode Sumber Data:</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="providerModeSwitch" class="sr-only peer"
+                                    onchange="toggleProviderMode()">
+                                <div
+                                    class="w-14 h-7 bg-dark-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-gray-400 after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-brand-cyan">
+                                </div>
+                            </label>
+                            <span class="text-sm font-bold" id="providerModeLabel">Firebase</span>
+                        </div>
+
+                        <!-- API Settings (shown when API mode is active) -->
+                        <div id="providerApiSettings" class="hidden space-y-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-400 mb-1">API Endpoint URL</label>
+                                    <input type="url" id="providerApiUrl"
+                                        class="w-full bg-dark-900 border border-dark-600 rounded-lg p-2.5 text-white focus:outline-none focus:border-brand-gold"
+                                        placeholder="https://api.provider.com/v1">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-400 mb-1">API Key</label>
+                                    <input type="password" id="providerApiKey"
+                                        class="w-full bg-dark-900 border border-dark-600 rounded-lg p-2.5 text-white focus:outline-none focus:border-brand-gold"
+                                        placeholder="••••••••••••">
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-400 mb-1">Secret Key</label>
+                                    <input type="password" id="providerSecretKey"
+                                        class="w-full bg-dark-900 border border-dark-600 rounded-lg p-2.5 text-white focus:outline-none focus:border-brand-gold"
+                                        placeholder="••••••••••••">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-400 mb-1">Agent ID</label>
+                                    <input type="text" id="providerAgentId"
+                                        class="w-full bg-dark-900 border border-dark-600 rounded-lg p-2.5 text-white focus:outline-none focus:border-brand-gold"
+                                        placeholder="AGENT123">
+                                </div>
+                            </div>
+                            <button onclick="saveProviderSettings()"
+                                class="w-full py-2.5 bg-brand-purple text-white font-bold rounded-lg hover:bg-purple-600 transition-colors">
+                                Simpan Pengaturan API
+                            </button>
+                        </div>
+
+                        <!-- Firebase Mode Info -->
+                        <div id="firebaseModeInfo" class="p-4 bg-green-500/10 border border-green-500/30 rounded-lg">
+                            <p class="text-sm text-green-400">
+                                ✅ <strong>Mode Firebase Aktif</strong> - Game dan data dikelola melalui database
+                                Firebase lokal.
+                                <br><span class="text-xs text-gray-400">Untuk menggunakan API provider, aktifkan switch
+                                    di atas.</span>
+                            </p>
+                        </div>
+
+                        <!-- Per-Provider API Settings -->
+                        <div class="mt-4 pt-4 border-t border-dark-600">
+                            <h4 class="text-sm font-bold text-white mb-3">Konfigurasi API Per Provider</h4>
+                            <p class="text-xs text-gray-400 mb-3">Klik provider untuk mengatur API masing-masing:</p>
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+                                <button onclick="openProviderApiModal('pragmatic')"
+                                    class="p-2 text-xs bg-dark-900 border border-dark-600 rounded-lg hover:border-brand-gold text-white font-bold transition-colors">
+                                    Pragmatic Play
+                                </button>
+                                <button onclick="openProviderApiModal('pgsoft')"
+                                    class="p-2 text-xs bg-dark-900 border border-dark-600 rounded-lg hover:border-brand-gold text-white font-bold transition-colors">
+                                    PG Soft
+                                </button>
+                                <button onclick="openProviderApiModal('habanero')"
+                                    class="p-2 text-xs bg-dark-900 border border-dark-600 rounded-lg hover:border-brand-gold text-white font-bold transition-colors">
+                                    Habanero
+                                </button>
+                                <button onclick="openProviderApiModal('spade')"
+                                    class="p-2 text-xs bg-dark-900 border border-dark-600 rounded-lg hover:border-brand-gold text-white font-bold transition-colors">
+                                    Spade Gaming
+                                </button>
+                                <button onclick="openProviderApiModal('joker')"
+                                    class="p-2 text-xs bg-dark-900 border border-dark-600 rounded-lg hover:border-brand-gold text-white font-bold transition-colors">
+                                    Joker Gaming
+                                </button>
+                                <button onclick="openProviderApiModal('microgaming')"
+                                    class="p-2 text-xs bg-dark-900 border border-dark-600 rounded-lg hover:border-brand-gold text-white font-bold transition-colors">
+                                    Microgaming
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions Card -->
+                    <div class="bg-dark-800 p-6 rounded-xl border border-dark-700">
+                        <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-brand-purple" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                            </svg>
+                            Quick Actions
+                        </h3>
+                        <div class="space-y-3">
+                            <button onclick="openBroadcastModal()"
+                                class="w-full py-3 px-4 bg-dark-900 border border-dark-600 rounded-lg text-left hover:bg-dark-700 transition-colors flex items-center gap-3">
+                                <svg class="w-5 h-5 text-brand-gold" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z">
+                                    </path>
+                                </svg>
+                                <span class="font-bold text-white">Kirim Broadcast</span>
+                            </button>
+                            <button onclick="switchAdminTab('users')"
+                                class="w-full py-3 px-4 bg-dark-900 border border-dark-600 rounded-lg text-left hover:bg-dark-700 transition-colors flex items-center gap-3">
+                                <svg class="w-5 h-5 text-brand-cyan" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">
+                                    </path>
+                                </svg>
+                                <span class="font-bold text-white">Kelola Users</span>
+                            </button>
+                            <button onclick="switchAdminTab('payments')"
+                                class="w-full py-3 px-4 bg-dark-900 border border-dark-600 rounded-lg text-left hover:bg-dark-700 transition-colors flex items-center gap-3">
+                                <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z">
+                                    </path>
+                                </svg>
+                                <span class="font-bold text-white">Metode Pembayaran</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- System Info Card -->
+                    <div class="bg-dark-800 p-6 rounded-xl border border-dark-700">
+                        <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z">
+                                </path>
+                            </svg>
+                            System Info
+                        </h3>
+                        <div class="space-y-3 text-sm">
+                            <div class="flex justify-between py-2 border-b border-dark-600">
+                                <span class="text-gray-400">Platform</span>
+                                <span class="text-white font-mono">PAKLONG88 v1.0</span>
+                            </div>
+                            <div class="flex justify-between py-2 border-b border-dark-600">
+                                <span class="text-gray-400">Database</span>
+                                <span class="text-green-400">● Firebase Connected</span>
+                            </div>
+                            <div class="flex justify-between py-2">
+                                <span class="text-gray-400">Last Update</span>
+                                <span class="text-white font-mono">Dec 2024</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PROMO MANAGEMENT VIEW -->
+            <div id="view-promo" class="admin-view hidden animate-fade-in">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold">Manajemen Promo</h2>
+                    <button onclick="openPromoModal()"
+                        class="px-6 py-2.5 bg-brand-gold text-dark-900 font-bold rounded-lg hover:bg-yellow-500 transition-colors flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        TAMBAH PROMO
+                    </button>
+                </div>
+
+                <div id="promoGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Loaded dynamically -->
+                </div>
+            </div>
+
+            <!-- RUNNING TEXT MANAGEMENT (in Settings) -->
+            <div id="view-runningtext" class="admin-view hidden animate-fade-in">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold">Edit Running Text</h2>
+                </div>
+
+                <div class="bg-dark-800 rounded-xl border border-dark-700 p-6">
+                    <p class="text-gray-400 text-sm mb-4">
+                        Kelola teks berjalan yang muncul di homepage. Tambah, edit, atau hapus item sesuai kebutuhan.
+                    </p>
+
+                    <div id="runningTextList" class="space-y-3 mb-4">
+                        <!-- Items loaded dynamically -->
+                    </div>
+
+                    <div class="flex gap-2">
+                        <input type="text" id="newRunningText" placeholder="Tambah teks baru..."
+                            class="flex-1 bg-dark-900 border border-dark-600 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-brand-gold">
+                        <button onclick="addRunningText()"
+                            class="px-4 py-2.5 bg-brand-cyan text-dark-900 font-bold rounded-lg hover:bg-cyan-400 transition-colors">
+                            + Tambah
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Add Game Modal -->
+    <div id="addGameModal"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden">
+        <div
+            class="bg-dark-800 w-full max-w-lg rounded-xl border border-dark-600 shadow-2xl overflow-hidden animate-fade-in-up">
+            <div class="flex justify-between items-center p-6 border-b border-dark-700">
+                <h3 class="text-xl font-bold text-white">Tambah Game Baru</h3>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+            <form id="addGameForm" onsubmit="handleGameSubmit(event)">
+                <div class="p-6 space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400 mb-1">Nama Game</label>
+                        <input type="text" id="gameName" required
+                            class="w-full bg-dark-900 border border-dark-600 rounded-lg p-2.5 text-white focus:outline-none focus:border-brand-gold"
+                            placeholder="Contoh: Sweet Bonanza">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-1">Provider</label>
+                            <select id="gameProvider"
+                                class="w-full bg-dark-900 border border-dark-600 rounded-lg p-2.5 text-white focus:outline-none focus:border-brand-gold">
+                                <option>Pragmatic Play</option>
+                                <option>PG Soft</option>
+                                <option>Habanero</option>
+                                <option>Spadegaming</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-1">Kategori</label>
+                            <select id="gameCategory"
+                                class="w-full bg-dark-900 border border-dark-600 rounded-lg p-2.5 text-white focus:outline-none focus:border-brand-gold">
+                                <option>Slots</option>
+                                <option>Arcade</option>
+                                <option>Live Casino</option>
+                                <option>Sports</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400 mb-1">Win Rate / RTP (%)</label>
+                        <input type="number" id="gameRTP" required min="1" max="100"
+                            class="w-full bg-dark-900 border border-dark-600 rounded-lg p-2.5 text-white focus:outline-none focus:border-brand-gold"
+                            placeholder="Contoh: 98">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400 mb-1">Link Game (URL)</label>
+                        <input type="url" id="gameUrl" required
+                            class="w-full bg-dark-900 border border-dark-600 rounded-lg p-2.5 text-white focus:outline-none focus:border-brand-gold"
+                            placeholder="https://game-provider.com/play/...">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400 mb-1">Thumbnail URL</label>
+                        <input type="url" id="gameImage" required
+                            class="w-full bg-dark-900 border border-dark-600 rounded-lg p-2.5 text-white focus:outline-none focus:border-brand-gold"
+                            placeholder="https://image-source.com/...">
+                    </div>
+                </div>
+                <div class="p-6 border-t border-dark-700 flex justify-end gap-3 z-10 sticky bottom-0 bg-dark-800">
+                    <button type="button" onclick="closeModal()"
+                        class="px-5 py-2.5 rounded-lg border border-dark-600 text-gray-300 font-bold hover:bg-dark-700 transition-colors">Batal</button>
+                    <button type="submit"
+                        class="px-5 py-2.5 rounded-lg bg-brand-gold text-dark-900 font-bold hover:bg-yellow-500 transition-colors">Simpan
+                        Game</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+
+    <!-- Toast Container -->
+
+    <!-- Login Overlay -->
+    <div id="paymentModal"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden animate-fade-in">
+        <div class="bg-dark-800 w-full max-w-md rounded-xl border border-dark-600 shadow-2xl overflow-hidden">
+            <div class="flex justify-between items-center p-6 border-b border-dark-700">
+                <h3 class="text-xl font-bold text-white">Tambah Metode Pembayaran</h3>
+                <button onclick="document.getElementById('paymentModal').classList.add('hidden')"
+                    class="text-gray-400 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+            <form onsubmit="handlePaymentSubmit(event)" class="p-6 space-y-4">
+                <div id="payNameContainer">
+                    <label class="block text-sm font-medium text-gray-400 mb-1">Nama Bank / QRIS</label>
+                    <input type="text" id="payName" required placeholder="BCA / QRIS DANA"
+                        class="w-full bg-dark-900 border border-dark-600 rounded-lg p-2.5 text-white focus:outline-none focus:border-brand-gold">
+                </div>
+
+                <div id="payNumberContainer">
+                    <label class="block text-sm font-medium text-gray-400 mb-1">Nomor Rekening</label>
+                    <input type="text" id="payNumber"
+                        class="w-full bg-dark-900 border border-dark-600 rounded-lg p-2.5 text-white focus:outline-none focus:border-brand-gold">
+                </div>
+
+                <div id="payHolderContainer">
+                    <label class="block text-sm font-medium text-gray-400 mb-1">Atas Nama</label>
+                    <input type="text" id="payHolder"
+                        class="w-full bg-dark-900 border border-dark-600 rounded-lg p-2.5 text-white focus:outline-none focus:border-brand-gold">
+                </div>
+
+                <div id="payImageContainer" class="hidden">
+                    <label class="block text-sm font-medium text-gray-400 mb-1">URL Gambar QRIS</label>
+                    <input type="url" id="payImage" placeholder="https://..."
+                        class="w-full bg-dark-900 border border-dark-600 rounded-lg p-2.5 text-white focus:outline-none focus:border-brand-gold">
+                    <p class="text-xs text-gray-500 mt-1">Masukkan direct link gambar QR Code.</p>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-1">Tipe</label>
+                    <select id="payType"
+                        class="w-full bg-dark-900 border border-dark-600 rounded-lg p-2.5 text-white focus:outline-none focus:border-brand-gold">
+                        <option value="bank">Bank Transfer</option>
+                        <option value="ewallet">E-Wallet / QRIS</option>
+                    </select>
+                </div>
+
+                <button type="submit"
+                    class="w-full py-2.5 bg-brand-gold text-dark-900 font-bold rounded-lg hover:bg-yellow-500 transition-colors">Simpan
+                    Metode</button>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- Admin Settings Modal -->
+    <div id="adminSettingsModal"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden animate-fade-in">
+        <div class="bg-dark-800 w-full max-w-md rounded-xl border border-dark-600 shadow-2xl overflow-hidden">
+            <div class="flex justify-between items-center p-6 border-b border-dark-700">
+                <h3 class="text-xl font-bold text-white">Edit Admin Profile</h3>
+                <button onclick="document.getElementById('adminSettingsModal').classList.add('hidden')"
+                    class="text-gray-400 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+            <form onsubmit="handleAdminUpdate(event)" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-1">Display Name</label>
+                    <input type="text" id="editAdminName" required
+                        class="w-full bg-dark-900 border border-dark-600 rounded-lg p-2.5 text-white focus:outline-none focus:border-brand-gold">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-1">Avatar URL</label>
+                    <input type="url" id="editAdminAvatar" placeholder="https://..."
+                        class="w-full bg-dark-900 border border-dark-600 rounded-lg p-2.5 text-white focus:outline-none focus:border-brand-gold">
+                </div>
+                <button type="submit"
+                    class="w-full py-2.5 bg-brand-gold text-dark-900 font-bold rounded-lg hover:bg-yellow-500 transition-colors">Simpan
+                    Perubahan</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Broadcast Modal -->
+    <div id="broadcastModal"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden animate-fade-in">
+        <div class="bg-dark-800 w-full max-w-lg rounded-xl border border-dark-600 shadow-2xl overflow-hidden">
+            <div class="flex justify-between items-center p-6 border-b border-dark-700">
+                <h3 class="text-xl font-bold text-white">Kirim Notifikasi Massal</h3>
+                <button onclick="document.getElementById('broadcastModal').classList.add('hidden')"
+                    class="text-gray-400 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+            <form onsubmit="handleBroadcast(event)" class="p-6 space-y-4">
+                <div class="bg-blue-500/10 border border-blue-500/20 p-4 rounded-lg text-sm text-blue-300">
+                    <p>Pesan ini akan muncul sebagai popup notifikasi (Toast) secara realtime kepada semua user yang
+                        sedang online.</p>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-1">Pesan</label>
+                    <textarea id="broadcastMessage" rows="3" required
+                        class="w-full bg-dark-900 border border-dark-600 rounded-lg p-2.5 text-white focus:outline-none focus:border-brand-gold"
+                        placeholder="Contoh: Maintenance server akan dimulai dalam 10 menit..."></textarea>
+                </div>
+                <div class="flex justify-end gap-3">
+                    <button type="button" onclick="document.getElementById('broadcastModal').classList.add('hidden')"
+                        class="px-5 py-2.5 rounded-lg border border-dark-600 text-gray-300 font-bold hover:bg-dark-700 transition-colors">Batal</button>
+                    <button type="submit"
+                        class="px-5 py-2.5 rounded-lg bg-brand-cyan text-dark-900 font-bold hover:bg-cyan-400 transition-colors">Kirim
+                        Sekarang</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Manual Balance Modal -->
+    <div id="balanceModal"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden animate-fade-in">
+        <div class="bg-dark-800 w-full max-w-md rounded-xl border border-dark-600 shadow-2xl overflow-hidden">
+            <div class="flex justify-between items-center p-6 border-b border-dark-700">
+                <h3 class="text-xl font-bold text-white">Manual Top Up</h3>
+                <button onclick="document.getElementById('balanceModal').classList.add('hidden')"
+                    class="text-gray-400 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+            <form onsubmit="handleBalanceSubmit(event)" class="p-6 space-y-4">
+                <input type="hidden" id="balanceUserUid">
+                <div class="bg-brand-gold/10 border border-brand-gold/20 p-4 rounded-lg">
+                    <p class="text-sm text-brand-gold">Menambahkan saldo secara manual ke user: <span
+                            id="balanceUsername" class="font-bold text-white"></span></p>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-1">Nominal (IDR)</label>
+                    <input type="number" id="balanceAmount" required min="1000"
+                        class="w-full bg-dark-900 border border-dark-600 rounded-lg p-2.5 text-white focus:outline-none focus:border-brand-gold"
+                        placeholder="Contoh: 50000">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-1">Catatan (Opsional)</label>
+                    <input type="text" id="balanceNote"
+                        class="w-full bg-dark-900 border border-dark-600 rounded-lg p-2.5 text-white focus:outline-none focus:border-brand-gold"
+                        placeholder="Bonus / Refund / Lainnya">
+                </div>
+                <button type="submit"
+                    class="w-full py-2.5 bg-brand-gold text-dark-900 font-bold rounded-lg hover:bg-yellow-500 transition-colors">Tambah
+                    Saldo</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add User Modal -->
+    <div id="addUserModal"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden animate-fade-in">
+        <div class="bg-dark-800 w-full max-w-md rounded-xl border border-dark-600 shadow-2xl overflow-hidden">
+            <div class="flex justify-between items-center p-6 border-b border-dark-700">
+                <h3 class="text-xl font-bold text-white">Tambah User Baru</h3>
+                <button onclick="document.getElementById('addUserModal').classList.add('hidden')"
+                    class="text-gray-400 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+            <form onsubmit="handleAddUser(event)" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-1">Email</label>
+                    <input type="email" id="newUserEmail" required
+                        class="w-full bg-dark-900 border border-dark-600 rounded-lg p-2.5 text-white focus:outline-none focus:border-brand-gold"
+                        placeholder="user@example.com">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-1">Password</label>
+                    <input type="password" id="newUserPassword" required minlength="6"
+                        class="w-full bg-dark-900 border border-dark-600 rounded-lg p-2.5 text-white focus:outline-none focus:border-brand-gold"
+                        placeholder="Min 6 karakter">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-1">Username</label>
+                    <input type="text" id="newUserUsername" required
+                        class="w-full bg-dark-900 border border-dark-600 rounded-lg p-2.5 text-white focus:outline-none focus:border-brand-gold"
+                        placeholder="Username">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-1">Saldo Awal (Opsional)</label>
+                    <input type="number" id="newUserBalance" value="0"
+                        class="w-full bg-dark-900 border border-dark-600 rounded-lg p-2.5 text-white focus:outline-none focus:border-brand-gold"
+                        placeholder="0">
+                </div>
+                <button type="submit"
+                    class="w-full py-2.5 bg-brand-cyan text-dark-900 font-bold rounded-lg hover:bg-cyan-400 transition-colors">Buat
+                    User</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Promo Modal -->
+    <div id="promoModal"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden animate-fade-in">
+        <div class="bg-dark-800 w-full max-w-lg rounded-xl border border-dark-600 shadow-2xl overflow-hidden">
+            <div class="flex justify-between items-center p-6 border-b border-dark-700">
+                <h3 class="text-xl font-bold text-white" id="promoModalTitle">Tambah Promo</h3>
+                <button onclick="document.getElementById('promoModal').classList.add('hidden')"
+                    class="text-gray-400 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+            <form onsubmit="handlePromoSubmit(event)" class="p-6 space-y-4">
+                <input type="hidden" id="promoKey">
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-1">Judul Promo</label>
+                    <input type="text" id="promoTitle" required
+                        class="w-full bg-dark-900 border border-dark-600 rounded-lg p-2.5 text-white focus:outline-none focus:border-brand-gold"
+                        placeholder="Contoh: Bonus Deposit 100%">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-1">Deskripsi</label>
+                    <textarea id="promoDescription" rows="3" required
+                        class="w-full bg-dark-900 border border-dark-600 rounded-lg p-2.5 text-white focus:outline-none focus:border-brand-gold"
+                        placeholder="Jelaskan detail promo..."></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-1">Badge (Opsional)</label>
+                    <input type="text" id="promoBadge"
+                        class="w-full bg-dark-900 border border-dark-600 rounded-lg p-2.5 text-white focus:outline-none focus:border-brand-gold"
+                        placeholder="Contoh: NEW, HOT, LIMITED">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-1">URL Gambar (Opsional)</label>
+                    <input type="url" id="promoImage"
+                        class="w-full bg-dark-900 border border-dark-600 rounded-lg p-2.5 text-white focus:outline-none focus:border-brand-gold"
+                        placeholder="https://...">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-1">Syarat & Ketentuan (Opsional)</label>
+                    <input type="text" id="promoTerms"
+                        class="w-full bg-dark-900 border border-dark-600 rounded-lg p-2.5 text-white focus:outline-none focus:border-brand-gold"
+                        placeholder="Contoh: Minimal deposit 50rb">
+                </div>
+                <button type="submit"
+                    class="w-full py-2.5 bg-brand-gold text-dark-900 font-bold rounded-lg hover:bg-yellow-500 transition-colors">Simpan
+                    Promo</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Per-Provider API Modal -->
+    <div id="providerApiModal"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden animate-fade-in">
+        <div class="bg-dark-800 w-full max-w-md rounded-xl border border-dark-600 shadow-2xl overflow-hidden">
+            <div class="flex justify-between items-center p-6 border-b border-dark-700">
+                <h3 class="text-xl font-bold text-white" id="providerApiModalTitle">API Settings</h3>
+                <button onclick="document.getElementById('providerApiModal').classList.add('hidden')"
+                    class="text-gray-400 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+            <div class="p-6 space-y-4">
+                <input type="hidden" id="providerApiName">
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-1">API URL</label>
+                    <input type="url" id="perProviderUrl"
+                        class="w-full bg-dark-900 border border-dark-600 rounded-lg p-2.5 text-white focus:outline-none focus:border-brand-gold"
+                        placeholder="https://api.provider.com/v1">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-1">API Key</label>
+                    <input type="password" id="perProviderKey"
+                        class="w-full bg-dark-900 border border-dark-600 rounded-lg p-2.5 text-white focus:outline-none focus:border-brand-gold"
+                        placeholder="••••••••••••">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-1">Secret Key</label>
+                    <input type="password" id="perProviderSecret"
+                        class="w-full bg-dark-900 border border-dark-600 rounded-lg p-2.5 text-white focus:outline-none focus:border-brand-gold"
+                        placeholder="••••••••••••">
+                </div>
+                <button onclick="savePerProviderSettings()"
+                    class="w-full py-2.5 bg-brand-purple text-white font-bold rounded-lg hover:bg-purple-600 transition-colors">
+                    Simpan API Provider
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="js/admin.js"></script>
+
+</body>
+
+</html>
